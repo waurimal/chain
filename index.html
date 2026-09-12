@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Word Chain Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;900&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Nunito', 'Noto Sans KR', sans-serif;
+            background-color: #f0fdf4;
+            background-image: radial-gradient(#bbf7d0 1px, transparent 1px);
+            background-size: 20px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            color: #333;
+        }
+
+        h1, h2, h3, .font-heading {
+            font-family: 'Fredoka One', 'Noto Sans KR', cursive;
+        }
+
+        .app-container {
+            background: white;
+            border-radius: 32px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1), 0 0 0 10px rgba(255,255,255,0.5);
+            width: 100%;
+            max-width: 600px;
+            height: 90vh;
+            max-height: 850px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 스크롤바 디자인 */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* 버튼 애니메이션 */
+        .btn-bounce {
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .btn-bounce:active { transform: scale(0.95); }
+
+        /* 채팅 UI 스타일 (내가 한 건 왼쪽, 상대방은 오른쪽) */
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            background-color: #f8fafc;
+            border-top: 2px solid #e2e8f0;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .chat-bubble {
+            max-width: 75%;
+            padding: 1rem 1.5rem;
+            border-radius: 24px;
+            font-size: 1.25rem;
+            font-weight: 700;
+            position: relative;
+            animation: popIn 0.3s ease-out;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-bubble.me {
+            align-self: flex-start; /* 내가 한 것은 왼쪽 */
+            background-color: #e0f2fe;
+            border: 3px solid #38bdf8;
+            color: #0284c7;
+            border-bottom-left-radius: 4px;
+        }
+
+        .chat-bubble.opponent {
+            align-self: flex-end; /* 상대(컴퓨터/친구)는 오른쪽 */
+            background-color: #fef08a;
+            border: 3px solid #eab308;
+            color: #a16207;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-sender {
+            font-size: 0.8rem;
+            font-weight: bold;
+            opacity: 0.7;
+            margin-bottom: 0.25rem;
+        }
+
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.8) translateY(10px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* 입력 영역 */
+        .input-area {
+            padding: 1.5rem;
+            background: white;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .large-input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border: 4px solid #cbd5e1;
+            border-radius: 9999px;
+            outline: none;
+            transition: border-color 0.2s;
+            text-transform: lowercase;
+        }
+        .large-input:focus { border-color: #8b5cf6; }
+        .large-input:disabled { background-color: #f1f5f9; cursor: not-allowed; opacity: 0.7; }
+
+        .submit-btn {
+            background-color: #8b5cf6;
+            color: white;
+            border: none;
+            border-radius: 9999px;
+            height: 4rem;
+            width: 4rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #6d28d9;
+        }
+        .submit-btn:disabled { background-color: #cbd5e1; box-shadow: 0 4px 0 #94a3b8; cursor: not-allowed; }
+        .submit-btn:active:not(:disabled) { transform: translateY(4px); box-shadow: none; }
+
+        /* 모달 (팝업) 레이어 */
+        .modal-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 50;
+            padding: 1rem;
+        }
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .hidden { display: none !important; }
+
+        /* 기타 유틸 */
+        .custom-select, .custom-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-family: inherit;
+            margin-bottom: 1rem;
+            outline: none;
+        }
+        .custom-select:focus, .custom-input:focus { border-color: #3b82f6; }
+        
+        .timer-pulse { animation: pulseRed 1s infinite; color: #ef4444; }
+        @keyframes pulseRed { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.7; transform: scale(1.1); } }
+    </style>
+</head>
+<body>
+
+    <div class="app-container" id="app">
+        <!-- Loading Screen -->
+        <div id="loadingScreen" class="absolute inset-0 bg-white z-50 flex flex-col justify-center items-center">
+            <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-purple-500 mb-4"></div>
+            <h2 class="text-xl font-heading text-purple-600">서버 접속 중...</h2>
+        </div>
+
+        <!-- START SCREEN (User Info & Hall of Fame) -->
+        <div id="startScreen" class="flex-1 flex flex-col p-6 hidden overflow-y-auto">
+            <h1 class="text-4xl text-center text-purple-600 mb-2 mt-4 font-heading">Word Chain</h1>
+            <p class="text-center text-gray-500 font-bold mb-6">영어 끝말잇기 게임</p>
+
+            <!-- User Info Form -->
+            <div class="bg-blue-50 p-5 border-4 border-blue-200 rounded-3xl mb-6">
+                <h2 class="text-xl font-bold mb-4 text-blue-800">내 정보 입력</h2>
+                <div class="flex gap-2">
+                    <select id="selGrade" class="custom-select w-1/2">
+                        <option value="" disabled selected>학년</option>
+                        <option value="1">1학년</option><option value="2">2학년</option>
+                        <option value="3">3학년</option><option value="4">4학년</option>
+                        <option value="5">5학년</option><option value="6">6학년</option>
+                    </select>
+                    <select id="selClass" class="custom-select w-1/2">
+                        <option value="" disabled selected>반</option>
+                        <option value="1">1반</option><option value="2">2반</option>
+                        <option value="3">3반</option><option value="4">4반</option>
+                        <option value="5">5반</option><option value="6">6반</option>
+                        <option value="7">7반</option><option value="8">8반</option>
+                        <option value="9">9반</option><option value="10">10반</option>
+                    </select>
+                </div>
+                <div class="flex gap-2">
+                    <input type="number" id="inpNum" class="custom-input w-1/3" placeholder="번호" min="1" max="50">
+                    <input type="text" id="inpName" class="custom-input w-2/3" placeholder="이름 (예: 홍길동)">
+                </div>
+            </div>
+
+            <!-- Mode Selection -->
+            <div class="grid grid-cols-2 gap-3 mb-6">
+                <button id="btnSingle" class="bg-green-500 text-white font-bold py-4 rounded-2xl btn-bounce text-lg col-span-2 shadow-md">
+                    👤 혼자하기 (vs 컴퓨터)
+                </button>
+                <button id="btnCreateRoom" class="bg-yellow-400 text-yellow-900 font-bold py-4 rounded-2xl btn-bounce text-lg shadow-md">
+                    🏠 방 만들기
+                </button>
+                <button id="btnJoinRoom" class="bg-orange-400 text-white font-bold py-4 rounded-2xl btn-bounce text-lg shadow-md">
+                    🚀 방 들어가기
+                </button>
+            </div>
+
+            <!-- Hall of Fame -->
+            <div class="flex-1 bg-white border-4 border-purple-100 rounded-3xl p-4 flex flex-col relative">
+                <h2 class="text-xl font-bold text-purple-600 mb-3 flex justify-between items-center">
+                    🏆 명예의 전당 (혼자 & 멀티)
+                    <button id="btnAdmin" class="text-xs bg-gray-200 text-gray-600 px-2 py-1 rounded-md hover:bg-gray-300">관리자</button>
+                </h2>
+                <div id="hofList" class="flex-1 overflow-y-auto space-y-2">
+                    <!-- 기록이 여기에 추가됩니다 -->
+                    <div class="text-center text-gray-400 py-4">기록을 불러오는 중...</div>
+                </div>
+            </div>
+            
+            <div class="text-center text-gray-400 text-sm font-bold mt-3">만든이: 곽현석 (이의초등학교)</div>
+        </div>
+
+        <!-- GAME SCREEN -->
+        <div id="gameScreen" class="flex-1 flex flex-col hidden h-full">
+            <!-- Header (Score & Time) -->
+            <div class="bg-white p-4 flex justify-between items-center shadow-sm z-10">
+                <button id="btnQuitGame" class="bg-red-100 text-red-600 px-3 py-2 rounded-xl font-bold text-sm">나가기</button>
+                <div class="text-center">
+                    <div class="text-sm text-gray-500 font-bold uppercase tracking-wide" id="modeIndicator">SINGLE PLAYER</div>
+                    <div class="text-2xl font-heading text-purple-600" id="currentWordHeader">APPLE</div>
+                </div>
+                <div class="flex flex-col items-end gap-1">
+                    <div class="bg-green-100 text-green-800 px-3 py-1 rounded-full font-bold text-sm flex items-center gap-1">
+                        ⭐ <span id="uiScore">0</span>
+                    </div>
+                    <div class="bg-red-100 text-red-800 px-3 py-1 rounded-full font-bold text-sm flex items-center gap-1">
+                        ⏱ <span id="uiTime">60</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat / Word History Area -->
+            <div id="chatArea" class="chat-container">
+                <!-- <div class="chat-bubble opponent"><div class="chat-sender">컴퓨터</div>APPLE</div> -->
+            </div>
+
+            <!-- Validation Message -->
+            <div id="msgArea" class="bg-white px-4 py-2 text-center font-bold text-red-500 min-h-[40px] flex items-center justify-center"></div>
+
+            <!-- Large Input Area -->
+            <div class="input-area pb-6">
+                <input type="text" id="wordInput" class="large-input shadow-inner" placeholder="단어를 입력하세요..." autocomplete="off">
+                <button id="btnSubmitWord" class="submit-btn btn-bounce">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                </button>
+            </div>
+        </div>
+        
+        <!-- MODALS -->
+
+        <!-- Join Room Modal -->
+        <div id="modalJoinRoom" class="modal-overlay hidden">
+            <div class="modal-content text-center">
+                <h2 class="text-2xl font-heading text-orange-500 mb-4">방 코드 입력</h2>
+                <p class="text-gray-600 mb-4 font-bold">친구가 알려준 4자리 코드를 입력하세요.</p>
+                <input type="number" id="inpRoomCode" class="custom-input text-center text-3xl font-heading tracking-widest" placeholder="0000" maxlength="4" oninput="if(this.value.length > 4) this.value = this.value.slice(0,4);">
+                <div class="flex gap-2 mt-4">
+                    <button id="btnCancelJoin" class="flex-1 bg-gray-200 text-gray-700 py-3 rounded-xl font-bold">취소</button>
+                    <button id="btnConfirmJoin" class="flex-1 bg-orange-500 text-white py-3 rounded-xl font-bold">입장하기</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Waiting Room Modal -->
+        <div id="modalWaiting" class="modal-overlay hidden">
+            <div class="modal-content text-center">
+                <h2 class="text-2xl font-heading text-yellow-500 mb-2">방 만들기 성공!</h2>
+                <p class="text-gray-600 mb-4 font-bold">친구에게 아래 4자리 코드를 알려주세요.</p>
+                <div class="bg-yellow-100 border-4 border-yellow-300 rounded-2xl py-6 mb-6">
+                    <span id="displayRoomCode" class="text-6xl font-heading text-yellow-700 tracking-widest">1234</span>
+                </div>
+                <div class="animate-pulse text-yellow-600 font-bold mb-4">친구가 접속하기를 기다리는 중...</div>
+                <button id="btnCancelWait" class="bg-gray-200 text-gray-700 px-6 py-2 rounded-xl font-bold">방폭 (취소)</button>
+            </div>
+        </div>
+
+        <!-- Game Over Modal -->
+        <div id="modalGameOver" class="modal-overlay hidden">
+            <div class="modal-content text-center">
+                <h2 id="goTitle" class="text-4xl font-heading text-purple-600 mb-2">게임 종료!</h2>
+                <p id="goMsg" class="text-lg text-gray-600 font-bold mb-4">수고하셨습니다.</p>
+                <div class="bg-blue-50 rounded-2xl p-4 mb-6 inline-block w-full">
+                    <p class="text-sm text-blue-600 font-bold uppercase mb-1">최종 점수</p>
+                    <p id="goScore" class="text-5xl font-heading text-blue-600">150</p>
+                </div>
+                <button id="btnGoHome" class="w-full bg-purple-500 text-white py-4 rounded-2xl font-bold text-xl btn-bounce">처음으로 돌아가기</button>
+            </div>
+        </div>
+
+        <!-- Admin Modal -->
+        <div id="modalAdmin" class="modal-overlay hidden">
+            <div class="modal-content text-center w-[500px] max-w-full">
+                <h2 class="text-2xl font-heading text-red-500 mb-4">관리자 모드</h2>
+                
+                <div id="adminLoginArea">
+                    <input type="password" id="inpAdminPw" class="custom-input text-center" placeholder="비밀번호 입력">
+                    <div class="flex gap-2">
+                        <button id="btnAdminCancel" class="flex-1 bg-gray-200 text-gray-700 py-3 rounded-xl font-bold">닫기</button>
+                        <button id="btnAdminLogin" class="flex-1 bg-red-500 text-white py-3 rounded-xl font-bold">로그인</button>
+                    </div>
+                </div>
+
+                <div id="adminDashboard" class="hidden flex flex-col h-[400px]">
+                    <div class="flex justify-between items-center mb-2 border-b-2 pb-2">
+                        <h3 class="font-bold text-lg">명예의 전당 관리</h3>
+                        <button id="btnAdminLogout" class="text-sm bg-gray-200 px-2 py-1 rounded">로그아웃</button>
+                    </div>
+                    <div id="adminHofList" class="flex-1 overflow-y-auto space-y-2 mb-4 text-left">
+                        <!-- 관리자용 목록 -->
+                    </div>
+                    <div class="border-t-2 pt-4">
+                        <p class="font-bold text-sm mb-2 text-left">비밀번호 변경</p>
+                        <div class="flex gap-2">
+                            <input type="password" id="inpNewAdminPw" class="custom-input !mb-0" placeholder="새 비밀번호">
+                            <button id="btnChangePw" class="bg-blue-500 text-white px-4 rounded-xl font-bold whitespace-nowrap">변경</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase Scripts -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, doc, getDocs, addDoc, updateDoc, deleteDoc, onSnapshot, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global Variables
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'word-chain-v2';
+        
+        // 사용자가 제공한 Firebase 설정으로 교체
+        const firebaseConfig = {
+            apiKey: "AIzaSyDHCnRrVE2dVuJpf77P-1oftGpczR5WDd4",
+            authDomain: "eng-activity.firebaseapp.com",
+            projectId: "eng-activity",
+            storageBucket: "eng-activity.firebasestorage.app",
+            messagingSenderId: "528859753713",
+            appId: "1:528859753713:web:a1ed4a054380d181c10d50",
+            measurementId: "G-9FYLWDETPH"
+        };
+        const initialToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        // DB Paths (Rule 1 Strict Adherence)
+        const PATH_SCORES = `artifacts/${appId}/public/data/scores`;
+        const PATH_ROOMS = `artifacts/${appId}/public/data/rooms`;
+        const PATH_ADMIN = `artifacts/${appId}/public/data/admin`;
+
+        // Init Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // App State
+        let currentUser = null;
+        let myInfo = { grade: '', cls: '', num: '', name: '', maskedName: '' };
+        let gameState = {
+            mode: 'single', // 'single' or 'multi'
+            roomCode: null,
+            isMyTurn: false,
+            score: 0,
+            timeLeft: 60,
+            timerId: null,
+            currentWord: '',
+            usedWords: [],
+            opponentInfo: null // For multi
+        };
+        let dictionary = new Set(["apple", "banana", "cat", "dog", "elephant", "frog", "tiger", "lion", "road", "rain", "room", "rock", "read", "eat", "tea", "arm", "map", "pot", "top", "pen", "net", "ten", "nut", "run", "now", "win", "not", "tap", "pin", "nap", "pie", "ear", "rat", "toy", "yes", "sit", "two", "one", "red", "day", "you", "use", "end", "zoo", "zero"]);
+        const starterWords = ["APPLE", "BANANA", "TIGER", "WATER", "MOUSE", "HORSE"];
+        
+        let unsubscribeRoom = null; // For multiplayer listener
+        let unsubscribeHoF = null;  // For HoF real-time updates
+
+        // UI Elements - Screens
+        const loadingScreen = document.getElementById('loadingScreen');
+        const startScreen = document.getElementById('startScreen');
+        const gameScreen = document.getElementById('gameScreen');
+        
+        // UI Elements - User Info Form
+        const selGrade = document.getElementById('selGrade');
+        const selClass = document.getElementById('selClass');
+        const inpNum = document.getElementById('inpNum');
+        const inpName = document.getElementById('inpName');
+        
+        // UI Elements - Buttons
+        const btnSingle = document.getElementById('btnSingle');
+        const btnCreateRoom = document.getElementById('btnCreateRoom');
+        const btnJoinRoom = document.getElementById('btnJoinRoom');
+        const btnQuitGame = document.getElementById('btnQuitGame');
+        
+        // UI Elements - Game
+        const chatArea = document.getElementById('chatArea');
+        const msgArea = document.getElementById('msgArea');
+        const wordInput = document.getElementById('wordInput');
+        const btnSubmitWord = document.getElementById('btnSubmitWord');
+        const currentWordHeader = document.getElementById('currentWordHeader');
+        const uiScore = document.getElementById('uiScore');
+        const uiTime = document.getElementById('uiTime');
+        const modeIndicator = document.getElementById('modeIndicator');
+        
+        // UI Elements - Modals
+        const modalJoinRoom = document.getElementById('modalJoinRoom');
+        const inpRoomCode = document.getElementById('inpRoomCode');
+        const btnCancelJoin = document.getElementById('btnCancelJoin');
+        const btnConfirmJoin = document.getElementById('btnConfirmJoin');
+        
+        const modalWaiting = document.getElementById('modalWaiting');
+        const displayRoomCode = document.getElementById('displayRoomCode');
+        const btnCancelWait = document.getElementById('btnCancelWait');
+        
+        const modalGameOver = document.getElementById('modalGameOver');
+        const goTitle = document.getElementById('goTitle');
+        const goMsg = document.getElementById('goMsg');
+        const goScore = document.getElementById('goScore');
+        const btnGoHome = document.getElementById('btnGoHome');
+        
+        const hofList = document.getElementById('hofList');
+        
+        // Admin UI
+        const btnAdmin = document.getElementById('btnAdmin');
+        const modalAdmin = document.getElementById('modalAdmin');
+        const adminLoginArea = document.getElementById('adminLoginArea');
+        const adminDashboard = document.getElementById('adminDashboard');
+        const inpAdminPw = document.getElementById('inpAdminPw');
+        const btnAdminCancel = document.getElementById('btnAdminCancel');
+        const btnAdminLogin = document.getElementById('btnAdminLogin');
+        const btnAdminLogout = document.getElementById('btnAdminLogout');
+        const adminHofList = document.getElementById('adminHofList');
+        const inpNewAdminPw = document.getElementById('inpNewAdminPw');
+        const btnChangePw = document.getElementById('btnChangePw');
+
+        async function initApp() {
+            try {
+                if (initialToken) {
+                    try {
+                        // 플랫폼 기본 인증 시도
+                        await signInWithCustomToken(auth, initialToken);
+                    } catch (tokenError) {
+                        // 사용자 개인 Firebase 연동 시 플랫폼 토큰이 맞지 않아 오류가 발생하므로 익명 로그인으로 우회
+                        console.warn("개인 Firebase 프로젝트 설정이 감지되었습니다. 익명 로그인으로 연결합니다.");
+                        await signInAnonymously(auth);
+                    }
+                } else {
+                    await signInAnonymously(auth);
+                }
+                currentUser = auth.currentUser;
+                
+                // Initialize Admin document if it doesn't exist
+                const adminRef = doc(db, PATH_ADMIN, 'settings');
+                const adminSnap = await getDoc(adminRef);
+                if (!adminSnap.exists()) {
+                    await setDoc(adminRef, { password: '1234' });
+                }
+
+                // Listen to Hall of Fame
+                loadHallOfFame();
+
+                loadingScreen.classList.add('hidden');
+                startScreen.classList.remove('hidden');
+            } catch (error) {
+                console.error("Auth error:", error);
+                loadingScreen.innerHTML = `<h2 class="text-red-500 font-bold">초기화 오류가 발생했습니다. 새로고침 해주세요.</h2>`;
+            }
+        }
+
+        function maskName(name) {
+            if (!name) return "익명";
+            if (name.length <= 1) return name;
+            if (name.length === 2) return name[0] + '*';
+            return name[0] + 'O' + name.substring(2);
+        }
+
+        function validateUserInfo() {
+            const g = selGrade.value;
+            const c = selClass.value;
+            const num = inpNum.value.trim();
+            const n = inpName.value.trim();
+            
+            if (!g || !c || !num || !n) {
+                alertCustom("학년, 반, 번호, 이름을 모두 입력해주세요!");
+                return false;
+            }
+            myInfo = { 
+                grade: g, cls: c, num: num, name: n, 
+                maskedName: maskName(n),
+                uid: currentUser.uid
+            };
+            return true;
+        }
+
+        function alertCustom(msg) {
+            // Fallback UI without using standard alert()
+            const prev = btnGoHome.textContent;
+            goTitle.textContent = "알림";
+            goTitle.className = "text-2xl font-heading text-orange-500 mb-2";
+            goMsg.textContent = msg;
+            goScore.parentElement.classList.add('hidden');
+            btnGoHome.textContent = "확인";
+            btnGoHome.onclick = () => {
+                modalGameOver.classList.add('hidden');
+                btnGoHome.textContent = prev;
+                goScore.parentElement.classList.remove('hidden');
+            };
+            modalGameOver.classList.remove('hidden');
+        }
+
+        function showInGameMsg(msg, isError = true) {
+            msgArea.textContent = msg;
+            msgArea.className = `bg-white px-4 py-2 text-center font-bold min-h-[40px] flex items-center justify-center ${isError ? 'text-red-500' : 'text-green-500'}`;
+            setTimeout(() => { msgArea.textContent = ''; }, 2000);
+        }
+
+        function updateTimerUI() {
+            uiTime.textContent = gameState.timeLeft;
+            if (gameState.timeLeft <= 10) {
+                uiTime.parentElement.classList.add('timer-pulse');
+            } else {
+                uiTime.parentElement.classList.remove('timer-pulse');
+            }
+        }
+
+        function updateScoreUI() {
+            uiScore.textContent = gameState.score;
+        }
+
+        function renderChatBubble(word, senderName, isMe) {
+            const div = document.createElement('div');
+            div.className = `chat-bubble ${isMe ? 'me' : 'opponent'}`;
+            
+            const senderDiv = document.createElement('div');
+            senderDiv.className = 'chat-sender';
+            senderDiv.textContent = senderName;
+            
+            const wordSpan = document.createElement('span');
+            wordSpan.textContent = word.toUpperCase();
+            
+            div.appendChild(senderDiv);
+            div.appendChild(wordSpan);
+            chatArea.appendChild(div);
+            
+            // Scroll to bottom
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+
+        function resetGameUI() {
+            chatArea.innerHTML = '';
+            msgArea.textContent = '';
+            wordInput.value = '';
+            updateScoreUI();
+            updateTimerUI();
+            currentWordHeader.textContent = gameState.currentWord;
+        }
+
+        async function verifyWord(word) {
+            // Check local dictionary
+            if (dictionary.has(word)) return true;
+            // Check API
+            try {
+                const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
+                if (res.ok) {
+                    dictionary.add(word); // Cache it
+                    return true;
+                }
+                return false;
+            } catch (e) {
+                console.error("API Error, allowing word implicitly.", e);
+                return true; // If offline/error, allow to keep game flowing
+            }
+        }
+
+        function startSinglePlayer() {
+            if (!validateUserInfo()) return;
+            
+            gameState.mode = 'single';
+            gameState.score = 0;
+            gameState.timeLeft = 60;
+            gameState.usedWords = [];
+            gameState.currentWord = starterWords[Math.floor(Math.random() * starterWords.length)];
+            gameState.isMyTurn = true;
+            
+            modeIndicator.textContent = "👤 혼자하기";
+            resetGameUI();
+            
+            // Add first word to history
+            gameState.usedWords.push(gameState.currentWord.toLowerCase());
+            renderChatBubble(gameState.currentWord, '컴퓨터', false);
+            
+            startScreen.classList.add('hidden');
+            gameScreen.classList.remove('hidden');
+            
+            enableInput();
+            startLocalTimer();
+        }
+
+        function startLocalTimer() {
+            clearInterval(gameState.timerId);
+            gameState.timerId = setInterval(() => {
+                gameState.timeLeft--;
+                updateTimerUI();
+                if (gameState.timeLeft <= 0) {
+                    endSingleGame(false); // Time out
+                }
+            }, 1000);
+        }
+
+        function enableInput() {
+            gameState.isMyTurn = true;
+            wordInput.disabled = false;
+            btnSubmitWord.disabled = false;
+            wordInput.focus();
+        }
+
+        function disableInput() {
+            gameState.isMyTurn = false;
+            wordInput.disabled = true;
+            btnSubmitWord.disabled = true;
+        }
+
+        async function handleSingleSubmit() {
+            if (!gameState.isMyTurn) return;
+            const input = wordInput.value.trim().toLowerCase();
+            wordInput.value = '';
+
+            if (!input) return;
+            
+            const lastChar = gameState.currentWord.slice(-1).toLowerCase();
+            if (input[0] !== lastChar) {
+                showInGameMsg(`'${lastChar.toUpperCase()}'(으)로 시작하는 단어를 입력하세요!`);
+                return;
+            }
+            if (gameState.usedWords.includes(input)) {
+                showInGameMsg("이미 사용한 단어입니다!");
+                return;
+            }
+
+            disableInput();
+            
+            const isValid = await verifyWord(input);
+            if (!isValid) {
+                showInGameMsg("사전에 없는 단어입니다!");
+                enableInput();
+                return;
+            }
+
+            // Success
+            gameState.score += 10;
+            gameState.currentWord = input.toUpperCase();
+            gameState.usedWords.push(input);
+            currentWordHeader.textContent = gameState.currentWord;
+            renderChatBubble(input, myInfo.maskedName, true);
+            updateScoreUI();
+            
+            // Computer's Turn
+            clearInterval(gameState.timerId);
+            setTimeout(computerTurn, 1000);
+        }
+
+        function computerTurn() {
+            const lastChar = gameState.currentWord.slice(-1).toLowerCase();
+            const possible = Array.from(dictionary).filter(w => w.startsWith(lastChar) && !gameState.usedWords.includes(w));
+            
+            if (possible.length > 0) {
+                const cWord = possible[Math.floor(Math.random() * possible.length)];
+                gameState.currentWord = cWord.toUpperCase();
+                gameState.usedWords.push(cWord);
+                currentWordHeader.textContent = gameState.currentWord;
+                renderChatBubble(cWord, '컴퓨터', false);
+                
+                gameState.timeLeft = 60;
+                enableInput();
+                startLocalTimer();
+            } else {
+                // Computer loses
+                endSingleGame(true);
+            }
+        }
+
+        async function endSingleGame(isWin) {
+            clearInterval(gameState.timerId);
+            disableInput();
+            
+            let finalMsg = isWin ? "컴퓨터가 단어를 찾지 못했습니다! 당신의 승리!" : "시간 초과! 게임 오버.";
+            goTitle.textContent = isWin ? "승리!" : "시간 초과";
+            goTitle.className = isWin ? "text-4xl font-heading text-green-500 mb-2" : "text-4xl font-heading text-red-500 mb-2";
+            goMsg.textContent = finalMsg;
+            goScore.textContent = gameState.score;
+            
+            // Save to Hall of Fame if score > 0
+            if (gameState.score > 0) {
+                try {
+                    await addDoc(collection(db, PATH_SCORES), {
+                        uid: currentUser.uid,
+                        grade: myInfo.grade,
+                        cls: myInfo.cls,
+                        num: myInfo.num,
+                        name: myInfo.maskedName, // save masked
+                        score: gameState.score,
+                        mode: 'single', // 모드 저장
+                        timestamp: Date.now()
+                    });
+                } catch (e) {
+                    console.error("Failed to save score", e);
+                }
+            }
+            
+            btnGoHome.onclick = returnToHome;
+            modalGameOver.classList.remove('hidden');
+        }
+
+        function generateRoomCode() {
+            return Math.floor(1000 + Math.random() * 9000).toString(); // 1000~9999
+        }
+
+        async function handleCreateRoom() {
+            if (!validateUserInfo()) return;
+            const code = generateRoomCode();
+            gameState.roomCode = code;
+            
+            try {
+                // Create room document using the 4-digit code as ID
+                const roomRef = doc(db, PATH_ROOMS, code);
+                await setDoc(roomRef, {
+                    status: 'waiting',
+                    players: [myInfo],
+                    creatorId: currentUser.uid,
+                    lastUpdated: Date.now()
+                });
+                
+                displayRoomCode.textContent = code;
+                modalWaiting.classList.remove('hidden');
+                
+                // Listen for player joining
+                unsubscribeRoom = onSnapshot(roomRef, (snapshot) => {
+                    const data = snapshot.data();
+                    if (!data) return;
+                    if (data.status === 'playing' && data.players.length === 2) {
+                        modalWaiting.classList.add('hidden');
+                        startMultiplayer(data);
+                    }
+                }, (error) => { console.error("Room listener error", error); });
+
+            } catch (e) {
+                console.error("Room create error", e);
+                alertCustom("방 생성에 실패했습니다.");
+            }
+        }
+
+        async function handleCancelWait() {
+            if (unsubscribeRoom) unsubscribeRoom();
+            if (gameState.roomCode) {
+                await deleteDoc(doc(db, PATH_ROOMS, gameState.roomCode));
+            }
+            modalWaiting.classList.add('hidden');
+            gameState.roomCode = null;
+        }
+
+        async function handleJoinRoom() {
+            if (!validateUserInfo()) return;
+            modalJoinRoom.classList.remove('hidden');
+            inpRoomCode.value = '';
+            inpRoomCode.focus();
+        }
+
+        async function submitJoinRoom() {
+            const code = inpRoomCode.value.trim();
+            if (code.length !== 4) {
+                alertCustom("4자리 코드를 입력해주세요.");
+                return;
+            }
+            
+            const roomRef = doc(db, PATH_ROOMS, code);
+            const snap = await getDoc(roomRef);
+            if (!snap.exists() || snap.data().status !== 'waiting') {
+                alertCustom("방이 존재하지 않거나 이미 게임이 시작되었습니다.");
+                return;
+            }
+            
+            const data = snap.data();
+            // Prevent joining own room on same device easily, but logic wise ok.
+            let pArr = data.players;
+            pArr.push(myInfo);
+            
+            const startWord = starterWords[Math.floor(Math.random() * starterWords.length)];
+            
+            try {
+                await updateDoc(roomRef, {
+                    status: 'playing',
+                    players: pArr,
+                    currentTurn: data.creatorId, // Creator goes first
+                    currentWord: startWord,
+                    usedWords: [startWord.toLowerCase()],
+                    lastUpdated: Date.now()
+                });
+                gameState.roomCode = code;
+                modalJoinRoom.classList.add('hidden');
+                startMultiplayer({ ...data, players: pArr, currentTurn: data.creatorId, currentWord: startWord, usedWords: [startWord.toLowerCase()] });
+                
+                // Set up listener
+                setupMultiplayerListener();
+            } catch (e) {
+                console.error("Join error", e);
+                alertCustom("입장에 실패했습니다.");
+            }
+        }
+        
+        function setupMultiplayerListener() {
+            if (unsubscribeRoom) unsubscribeRoom();
+            const roomRef = doc(db, PATH_ROOMS, gameState.roomCode);
+            unsubscribeRoom = onSnapshot(roomRef, (snapshot) => {
+                if (!snapshot.exists()) {
+                    endMultiGame("방이 삭제되었습니다.");
+                    return;
+                }
+                handleMultiplayerStateChange(snapshot.data());
+            }, (err) => console.error(err));
+        }
+
+        function startMultiplayer(data) {
+            gameState.mode = 'multi';
+            gameState.score = 0; // 점수 초기화
+            updateScoreUI();
+            
+            const p1 = data.players[0];
+            const p2 = data.players[1];
+            gameState.opponentInfo = (p1.uid === currentUser.uid) ? p2 : p1;
+            
+            modeIndicator.textContent = `🚀 다인용 (vs ${gameState.opponentInfo.maskedName})`;
+            uiScore.parentElement.classList.remove('hidden'); // 멀티에서도 점수 보이게 활성화
+            
+            startScreen.classList.add('hidden');
+            gameScreen.classList.remove('hidden');
+            
+            if (p1.uid === currentUser.uid) {
+                setupMultiplayerListener(); // Creator sets up listener here
+            }
+            
+            handleMultiplayerStateChange(data, true);
+        }
+
+        function handleMultiplayerStateChange(data, isInit = false) {
+            if (data.status === 'finished') {
+                const isWin = data.winner === currentUser.uid;
+                let msg = isWin ? "상대방이 단어를 잇지 못했습니다!" : "패배했습니다!";
+                if (data.reason === 'timeout') msg = isWin ? "상대방 시간 초과!" : "나의 시간 초과!";
+                if (data.reason === 'quit') msg = isWin ? "상대방이 도망갔습니다!" : "내가 나갔습니다.";
+                
+                clearInterval(gameState.timerId);
+                disableInput();
+                
+                goTitle.textContent = isWin ? "승리!" : "패배";
+                goTitle.className = isWin ? "text-4xl font-heading text-green-500 mb-2" : "text-4xl font-heading text-red-500 mb-2";
+                goMsg.textContent = msg;
+                goScore.textContent = gameState.score;
+                goScore.parentElement.classList.remove('hidden'); // 점수 영역 보이기
+                
+                // 멀티플레이 승리 시 명예의 전당 등록
+                if (isWin && gameState.score > 0) {
+                    addDoc(collection(db, PATH_SCORES), {
+                        uid: currentUser.uid,
+                        grade: myInfo.grade,
+                        cls: myInfo.cls,
+                        num: myInfo.num,
+                        name: myInfo.maskedName,
+                        score: gameState.score,
+                        mode: 'multi',
+                        timestamp: Date.now()
+                    }).catch(e => console.error("Failed to save multi score", e));
+                }
+                
+                btnGoHome.onclick = returnToHome;
+                modalGameOver.classList.remove('hidden');
+                
+                if (unsubscribeRoom) { unsubscribeRoom(); unsubscribeRoom = null; }
+                return;
+            }
+
+            // Sync Word state
+            if (data.usedWords.length > gameState.usedWords.length || isInit) {
+                // New word played
+                gameState.currentWord = data.currentWord.toUpperCase();
+                currentWordHeader.textContent = gameState.currentWord;
+                
+                // Re-render chat based on diff
+                chatArea.innerHTML = '';
+                data.usedWords.forEach((w, idx) => {
+                    // First word is neutral, assigned to opponent for UI simplicity, or System
+                    if (idx === 0) {
+                        renderChatBubble(w, '시스템 시작단어', false);
+                    } else {
+                        // Who played it? Based on turns. 
+                        // In 2 player, turns alternate. 
+                        // idx=1 was played by Creator (data.players[0])
+                        // idx=2 by Joiner (data.players[1])
+                        const playedByIdx = (idx - 1) % 2; 
+                        const playedByUid = data.players[playedByIdx].uid;
+                        const isMe = playedByUid === currentUser.uid;
+                        const name = isMe ? myInfo.maskedName : gameState.opponentInfo.maskedName;
+                        renderChatBubble(w, name, isMe);
+                    }
+                });
+                gameState.usedWords = data.usedWords;
+            }
+
+            // Sync Turn & Timer
+            gameState.isMyTurn = (data.currentTurn === currentUser.uid);
+            gameState.timeLeft = 60; // Reset timer on turn change
+            updateTimerUI();
+            
+            clearInterval(gameState.timerId);
+            gameState.timerId = setInterval(() => {
+                gameState.timeLeft--;
+                updateTimerUI();
+                if (gameState.timeLeft <= 0) {
+                    clearInterval(gameState.timerId);
+                    if (gameState.isMyTurn) {
+                        // I timed out, notify server I lost
+                        declareMultiGameOver(gameState.opponentInfo.uid, 'timeout');
+                    }
+                }
+            }, 1000);
+
+            if (gameState.isMyTurn) {
+                enableInput();
+                showInGameMsg("내 차례입니다!", false);
+            } else {
+                disableInput();
+                showInGameMsg("상대방의 차례입니다...", false);
+            }
+        }
+
+        async function handleMultiSubmit() {
+            if (!gameState.isMyTurn) return;
+            const input = wordInput.value.trim().toLowerCase();
+            wordInput.value = '';
+            if (!input) return;
+            
+            const lastChar = gameState.currentWord.slice(-1).toLowerCase();
+            if (input[0] !== lastChar) {
+                showInGameMsg(`'${lastChar.toUpperCase()}'(으)로 시작해야 합니다!`);
+                return;
+            }
+            if (gameState.usedWords.includes(input)) {
+                showInGameMsg("이미 사용한 단어입니다!");
+                return;
+            }
+
+            disableInput();
+            const isValid = await verifyWord(input);
+            if (!isValid) {
+                showInGameMsg("사전에 없는 단어입니다!");
+                enableInput();
+                return;
+            }
+
+            // 멀티플레이에서도 점수 추가
+            gameState.score += 10;
+            updateScoreUI();
+
+            // Valid word, push to Firebase
+            try {
+                const roomRef = doc(db, PATH_ROOMS, gameState.roomCode);
+                // Must fetch latest to avoid overwriting array blindly, though snapshot logic implies we have it.
+                // Using exact array replacement since we only append
+                const newArr = [...gameState.usedWords, input];
+                await updateDoc(roomRef, {
+                    currentTurn: gameState.opponentInfo.uid,
+                    currentWord: input,
+                    usedWords: newArr,
+                    lastUpdated: Date.now()
+                });
+                // Snapshot listener will handle the rest
+            } catch (e) {
+                console.error("Submit error", e);
+                enableInput();
+            }
+        }
+
+        async function declareMultiGameOver(winnerUid, reason) {
+            try {
+                const roomRef = doc(db, PATH_ROOMS, gameState.roomCode);
+                await updateDoc(roomRef, {
+                    status: 'finished',
+                    winner: winnerUid,
+                    reason: reason // 'timeout' or 'quit'
+                });
+            } catch (e) { console.error(e); }
+        }
+
+        async function handleQuit() {
+            if (gameState.mode === 'multi' && gameState.roomCode) {
+                await declareMultiGameOver(gameState.opponentInfo.uid, 'quit');
+            }
+            returnToHome();
+        }
+
+        function returnToHome() {
+            if (unsubscribeRoom) { unsubscribeRoom(); unsubscribeRoom = null; }
+            clearInterval(gameState.timerId);
+            gameState.roomCode = null;
+            modalGameOver.classList.add('hidden');
+            gameScreen.classList.add('hidden');
+            uiScore.parentElement.classList.remove('hidden'); // Reset UI
+            startScreen.classList.remove('hidden');
+        }
+
+        function loadHallOfFame() {
+            const q = collection(db, PATH_SCORES);
+            unsubscribeHoF = onSnapshot(q, (snapshot) => {
+                let records = [];
+                snapshot.forEach(doc => {
+                    records.push({ id: doc.id, ...doc.data() });
+                });
+                // Sort by score desc
+                records.sort((a, b) => b.score - a.score);
+                // Take top 50
+                records = records.slice(0, 50);
+                
+                renderHoF(records, hofList, false);
+                renderHoF(records, adminHofList, true);
+            }, (error) => console.error("HoF error", error));
+        }
+
+        function renderHoF(records, container, isAdmin) {
+            container.innerHTML = '';
+            if (records.length === 0) {
+                container.innerHTML = '<div class="text-center text-gray-400 py-4">아직 기록이 없습니다. 첫 기록의 주인공이 되어보세요!</div>';
+                return;
+            }
+            
+            records.forEach((r, idx) => {
+                const div = document.createElement('div');
+                div.className = 'flex justify-between items-center bg-gray-50 p-2 rounded-xl';
+                
+                let rankStr = `${idx + 1}위`;
+                if(idx===0) rankStr = '🥇 1위'; else if(idx===1) rankStr = '🥈 2위'; else if(idx===2) rankStr = '🥉 3위';
+
+                // 모드에 따라 배지 추가
+                let modeBadge = r.mode === 'multi' 
+                    ? '<span class="text-[10px] bg-orange-100 text-orange-600 px-1 py-0.5 rounded border border-orange-200 ml-1">멀티</span>' 
+                    : '<span class="text-[10px] bg-green-100 text-green-600 px-1 py-0.5 rounded border border-green-200 ml-1">혼자</span>';
+                
+                const infoStr = `${r.grade}학년 ${r.cls}반 ${r.num}번 ${r.name} ${modeBadge}`; // Masked name usually saved
+                
+                div.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <span class="font-bold w-12 text-center text-purple-600">${rankStr}</span>
+                        <span class="text-sm font-bold text-gray-700">${infoStr}</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="font-heading text-lg text-blue-600">${r.score}</span>
+                        ${isAdmin ? `<button class="text-xs bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600" data-id="${r.id}">삭제</button>` : ''}
+                    </div>
+                `;
+                
+                if (isAdmin) {
+                    div.querySelector('button').onclick = () => deleteRecord(r.id);
+                }
+                
+                container.appendChild(div);
+            });
+        }
+
+        async function openAdmin() {
+            inpAdminPw.value = '';
+            adminLoginArea.classList.remove('hidden');
+            adminDashboard.classList.add('hidden');
+            modalAdmin.classList.remove('hidden');
+        }
+
+        async function loginAdmin() {
+            const inputPw = inpAdminPw.value;
+            const adminRef = doc(db, PATH_ADMIN, 'settings');
+            const snap = await getDoc(adminRef);
+            if (snap.exists() && snap.data().password === inputPw) {
+                adminLoginArea.classList.add('hidden');
+                adminDashboard.classList.remove('hidden');
+            } else {
+                alert("비밀번호가 틀렸습니다.");
+            }
+        }
+
+        async function changeAdminPw() {
+            const newPw = inpNewAdminPw.value;
+            if (!newPw) return;
+            try {
+                await updateDoc(doc(db, PATH_ADMIN, 'settings'), { password: newPw });
+                alert("비밀번호가 변경되었습니다.");
+                inpNewAdminPw.value = '';
+            } catch (e) { console.error(e); alert("변경 실패"); }
+        }
+
+        async function deleteRecord(id) {
+            if(confirm("이 기록을 삭제하시겠습니까?")) {
+                try {
+                    await deleteDoc(doc(db, PATH_SCORES, id));
+                } catch(e) { console.error(e); }
+            }
+        }
+
+        btnSingle.addEventListener('click', startSinglePlayer);
+        btnCreateRoom.addEventListener('click', handleCreateRoom);
+        btnCancelWait.addEventListener('click', handleCancelWait);
+        
+        btnJoinRoom.addEventListener('click', handleJoinRoom);
+        btnCancelJoin.addEventListener('click', () => modalJoinRoom.classList.add('hidden'));
+        btnConfirmJoin.addEventListener('click', submitJoinRoom);
+        
+        btnSubmitWord.addEventListener('click', () => {
+            if(gameState.mode === 'single') handleSingleSubmit();
+            else handleMultiSubmit();
+        });
+        
+        wordInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                if(gameState.mode === 'single') handleSingleSubmit();
+                else handleMultiSubmit();
+            }
+        });
+        
+        btnQuitGame.addEventListener('click', () => {
+            if(confirm("정말 게임을 나가시겠습니까?")) handleQuit();
+        });
+
+        // Admin Events
+        btnAdmin.addEventListener('click', openAdmin);
+        btnAdminCancel.addEventListener('click', () => modalAdmin.classList.add('hidden'));
+        btnAdminLogin.addEventListener('click', loginAdmin);
+        btnAdminLogout.addEventListener('click', () => modalAdmin.classList.add('hidden'));
+        btnChangePw.addEventListener('click', changeAdminPw);
+
+        // Start Auth process
+        window.onload = initApp;
+
+    </script>
+</body>
+</html>
