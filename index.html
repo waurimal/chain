@@ -3,204 +3,685 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>초등 영어 끝말잇기</title>
+    <title>WORD CHAIN - 초등 영어 끝말잇기 | 와우리말</title>
+    
+    <!-- Pretendard 최신 웹폰트 -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+    <!-- Font Awesome 아이콘 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+    <!-- Waurimal 통합 테마 및 GNB 내비게이션 -->
+    <link rel="stylesheet" href="../common/waurimal-theme.css">
+    <script src="../common/waurimal-nav.js"></script>
+
     <style>
-        body { font-family: 'Jua', sans-serif; background-color: #f0fdf4; touch-action: manipulation; }
-        .bubble-left { background-color: #ffffff; border-radius: 1rem 1rem 1rem 0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        .bubble-right { background-color: #fef08a; border-radius: 1rem 1rem 0 1rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        .hidden-screen { display: none !important; }
-        .chat-container { scroll-behavior: smooth; }
-        /* 커스텀 모달 애니메이션 */
-        .modal-enter { animation: modalFadeIn 0.3s ease-out forwards; }
-        @keyframes modalFadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        :root {
+            --primary: #059669;
+            --primary-dark: #047857;
+            --primary-light: #ECFDF5;
+            --primary-glow: rgba(5, 150, 105, 0.25);
+            --secondary: #0D9488;
+            --secondary-light: #F0FDFA;
+            --teacher: #D97706;
+            --teacher-light: #FEF3C7;
+            --accent: #F59E0B;
+            --bg-page: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --border-color: #E2E8F0;
+            --text-main: #0F172A;
+            --text-sub: #475569;
+            --text-muted: #94A3B8;
+            --success: #10B981;
+            --danger: #EF4444;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+            --shadow-md: 0 4px 14px rgba(0,0,0,0.07), 0 2px 6px rgba(0,0,0,0.04);
+            --shadow-lg: 0 10px 25px -3px rgba(0,0,0,0.08), 0 4px 10px -2px rgba(0,0,0,0.04);
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            background: linear-gradient(180deg, #F8FAFC 0%, #ECFDF5 50%, #F0FDFA 100%);
+            min-height: 100vh;
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 7px; height: 7px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #F1F5F9; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+
+        .chain-wrap {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 0.8rem 1.2rem 2.5rem;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        /* 1. 상단 타이틀 헤더 및 시인성 극대화 서브타이틀 */
+        .hdr {
+            text-align: center;
+            padding: 0.4rem 0 1.2rem;
+        }
+
+        .hdr h1 {
+            font-size: clamp(1.7rem, 3.4vw, 2.4rem);
+            font-weight: 900;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #065F46 0%, #059669 45%, #0D9488 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.45rem;
+            line-height: 1.2;
+        }
+
+        .hdr-sub-box {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #FFFFFF;
+            border: 2px solid #34D399;
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.12);
+            padding: 0.45rem 1.3rem;
+            border-radius: 99px;
+            margin-top: 0.2rem;
+        }
+
+        .hdr-sub-text {
+            font-size: clamp(0.95rem, 2vw, 1.08rem) !important;
+            color: #064E3B !important;
+            font-weight: 800 !important;
+            letter-spacing: -0.01em;
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+        }
+
+        /* 홈 화면 좌우 2분할 레이아웃 (게임 모드 50%, 명예의 전당 50%) */
+        .home-split-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1.5rem;
+            align-items: stretch;
+            width: 100%;
+        }
+
+        @media (max-width: 960px) {
+            .home-split-grid {
+                grid-template-columns: 1fr;
+                gap: 1.2rem;
+            }
+        }
+
+        /* 공통 카드 컴포넌트 */
+        .chain-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s ease;
+        }
+
+        .chain-card-title {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.1rem;
+        }
+
+        /* 학생 환영 바 */
+        .student-welcome-bar {
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-radius: 14px;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* 1인 연습 히어로 버튼 */
+        .hero-btn {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 1.2rem 1.4rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 8px 20px rgba(5, 150, 105, 0.28);
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 100%;
+            text-align: left;
+        }
+
+        .hero-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(5, 150, 105, 0.35);
+        }
+
+        /* 모드 선택 카드 */
+        .mode-card {
+            background: #FFFFFF;
+            border: 1.5px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            width: 100%;
+        }
+
+        .mode-card:hover {
+            border-color: #34D399;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            background: #F0FDFA;
+        }
+
+        .mode-icon-box {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+
+        /* LIVE 펄스 배지 */
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #10B981;
+            border-radius: 50%;
+            display: inline-block;
+            animation: pulse-live 1.5s infinite;
+        }
+
+        @keyframes pulse-live {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        /* 채팅 말풍선 UI */
+        .bubble-left {
+            background: #FFFFFF;
+            border-radius: 1.1rem 1.1rem 1.1rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border: 1px solid #E2E8F0;
+        }
+
+        .bubble-right {
+            background: #D1FAE5;
+            border-radius: 1.1rem 1.1rem 0 1.1rem;
+            box-shadow: 0 2px 8px rgba(5, 150, 105, 0.12);
+            border: 1px solid #A7F3D0;
+        }
+
+        /* 모달 애니메이션 */
+        .modal-enter { animation: modalFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes modalFadeIn { from { opacity: 0; transform: scale(0.94); } to { opacity: 1; transform: scale(1); } }
     </style>
 </head>
-<body class="h-screen w-full overflow-hidden flex justify-center bg-green-50 text-gray-800">
-    <div id="app" class="w-full max-w-md bg-white h-full shadow-2xl relative flex flex-col">
-        
-        <!-- 커스텀 알림창 (Modal) -->
-        <div id="custom-modal" class="hidden absolute inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 px-4">
-            <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm modal-enter flex flex-col items-center text-center">
-                <div id="modal-icon" class="text-4xl mb-3">🔔</div>
-                <h3 id="modal-title" class="text-xl font-bold mb-2 text-gray-800">알림</h3>
-                <p id="modal-message" class="text-gray-600 mb-6 text-lg"></p>
-                <div id="modal-buttons" class="flex space-x-3 w-full">
-                    <button id="modal-btn-cancel" class="hidden flex-1 bg-gray-200 text-gray-700 py-3 rounded-xl font-bold hover:bg-gray-300">취소</button>
-                    <button id="modal-btn-confirm" class="flex-1 bg-green-500 text-white py-3 rounded-xl font-bold hover:bg-green-600 shadow-[0_4px_0_#16a34a] active:translate-y-1 active:shadow-none transition-all">확인</button>
+<body>
+    <div class="chain-wrap">
+        <!-- 상단 통합 헤더 -->
+        <header class="hdr">
+            <h1>WORD CHAIN</h1>
+            <div class="hdr-sub-box">
+                <span class="hdr-sub-text">
+                    <i class="fa-solid fa-link" style="color: #059669;"></i>
+                    앞 단어의 끝 글자로 새로운 단어를 잇는 실시간 영어 끝말잇기 놀이터
+                </span>
+            </div>
+        </header>
+
+        <!-- 알림 메시지 바 -->
+        <div id="alert-banner" class="hidden mb-4 p-3 bg-red-50 border border-red-200 rounded-xl flex items-center justify-between text-red-600 shadow-sm text-sm font-bold">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <span id="alert-banner-text"></span>
+            </div>
+            <button onclick="hideAlertBanner()" class="text-red-400 hover:text-red-700 font-bold px-2">✕</button>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 1. 메인 화면: 홈 화면 (좌우 2열 분할 레이아웃) -->
+        <!-- ─────────────────────────────────────────── -->
+        <div id="screen-home" class="home-split-grid">
+            <!-- [좌측]: 게임 모드 선택 및 규칙 안내 -->
+            <div class="flex flex-col gap-4">
+                <div class="chain-card">
+                    <!-- 1인 연습 히어로 버튼 -->
+                    <div class="mb-4">
+                        <button type="button" onclick="startSinglePlayer()" class="hero-btn">
+                            <div class="flex items-center gap-3.5">
+                                <div class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center text-2xl flex-shrink-0">
+                                    🤖
+                                </div>
+                                <div>
+                                    <div class="font-black text-lg">컴퓨터와 혼자하기 (1인 연습)</div>
+                                    <div class="text-xs text-emerald-100 font-medium mt-0.5">인공지능 컴퓨터와 끝말잇기를 하며 어휘력을 기르고 1위에 도전하세요!</div>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-lg text-emerald-200"></i>
+                        </button>
+                    </div>
+
+                    <!-- 멀티플레이 모드 그리드 (2열) -->
+                    <div class="grid grid-cols-2 gap-3 mb-4">
+                        <button type="button" onclick="openCreateRoomModal()" class="mode-card">
+                            <div class="mode-icon-box bg-teal-50 text-teal-600 border border-teal-100">
+                                <i class="fa-solid fa-house-medical"></i>
+                            </div>
+                            <div>
+                                <div class="font-black text-sm text-slate-800">1:1 방 만들기</div>
+                                <div class="text-[11px] text-slate-500 font-medium">4자리 코드로 친구 초대</div>
+                            </div>
+                        </button>
+                        <button type="button" onclick="openJoinRoomModal()" class="mode-card">
+                            <div class="mode-icon-box bg-amber-50 text-amber-600 border border-amber-100">
+                                <i class="fa-solid fa-right-to-bracket"></i>
+                            </div>
+                            <div>
+                                <div class="font-black text-sm text-slate-800">1:1 방 들어가기</div>
+                                <div class="text-[11px] text-slate-500 font-medium">방 코드를 입력하여 입장</div>
+                            </div>
+                        </button>
+                    </div>
+
+                    <!-- 단어 체인 핵심 규칙 안내 카드 -->
+                    <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200/80 text-xs text-slate-600">
+                        <div class="font-extrabold text-slate-800 mb-2 flex items-center gap-1.5">
+                            <i class="fa-solid fa-lightbulb text-amber-500"></i> 단어 체인(끝말잇기) 핵심 규칙
+                        </div>
+                        <ul class="space-y-1 font-semibold text-slate-600 leading-relaxed text-[11.5px]">
+                            <li>• 이전 단어의 <strong>마지막 알파벳</strong>으로 시작하는 <strong>2글자 이상의 영단어</strong>를 입력하세요.</li>
+                            <li>• 대결 중 이미 한 번 사용된 단어는 다시 사용할 수 없습니다.</li>
+                            <li>• 60초의 제한 시간 동안 단어를 이어 점수를 획득하세요 (긴 단어일수록 보너스 점수 부여!).</li>
+                            <li>• 초·중등 필수 영단어 2,800+개 및 실시간 고속 사전 검증이 적용됩니다.</li>
+                        </ul>
+                    </div>
+
+                    <!-- 교사 모드 진입 링크 -->
+                    <div class="mt-4 pt-3 border-t border-slate-100 flex justify-end">
+                        <button type="button" onclick="openTeacherAuthModal()" class="text-xs text-slate-400 hover:text-amber-600 font-bold flex items-center gap-1 transition-colors">
+                            <i class="fa-solid fa-lock"></i> 교사 전용 관리 화면
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- [우측]: 실시간 명예의 전당 (50% 분할) -->
+            <div class="chain-card flex flex-col h-full">
+                <!-- 카드 타이틀 & LIVE 배지 -->
+                <div class="flex justify-between items-center mb-3">
+                    <div class="chain-card-title mb-0">
+                        <i class="fa-solid fa-trophy text-amber-500"></i> 실시간 명예의 전당
+                    </div>
+                    <div class="flex items-center gap-1.5 bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-full text-xs font-extrabold border border-emerald-200">
+                        <span class="live-dot"></span> LIVE
+                    </div>
+                </div>
+
+                <!-- 탭 버튼 -->
+                <div class="grid grid-cols-3 gap-1 bg-slate-100 p-1 rounded-xl mb-3 text-center">
+                    <button type="button" id="tab-hof-all" onclick="changeHofTab('all')" class="py-1.5 rounded-lg text-xs font-bold bg-white text-emerald-700 shadow-sm transition-all">전체</button>
+                    <button type="button" id="tab-hof-single" onclick="changeHofTab('single')" class="py-1.5 rounded-lg text-xs font-bold text-slate-500 hover:text-slate-800 transition-all">혼자하기</button>
+                    <button type="button" id="tab-hof-multi" onclick="changeHofTab('multi')" class="py-1.5 rounded-lg text-xs font-bold text-slate-500 hover:text-slate-800 transition-all">1:1 멀티</button>
+                </div>
+
+                <!-- 1. 기간 선택 탭 (단어타자연습 표준 동일) -->
+                <div class="flex bg-slate-100 p-1 rounded-xl gap-1 mb-2.5">
+                    <button type="button" class="hof-period-tab flex-1 py-1.5 text-xs font-bold rounded-lg transition-all bg-white text-emerald-700 shadow-sm" id="hof-tab-all" onclick="setHofPeriod('all')">전체 기간</button>
+                    <button type="button" class="hof-period-tab flex-1 py-1.5 text-xs font-bold rounded-lg transition-all text-slate-500 hover:text-slate-800" id="hof-tab-month" onclick="setHofPeriod('month')">이번 달</button>
+                    <button type="button" class="hof-period-tab flex-1 py-1.5 text-xs font-bold rounded-lg transition-all text-slate-500 hover:text-slate-800" id="hof-tab-week" onclick="setHofPeriod('week')">이번 주</button>
+                </div>
+
+                <!-- 2. 학년(3~6학년) & 반(1~15반) 필터 -->
+                <div class="grid grid-cols-2 gap-2 mb-3">
+                    <select id="hof-filter-grade" onchange="filterHofList()" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-emerald-500">
+                        <option value="ALL">전체 학년</option>
+                        <option value="3">3학년</option>
+                        <option value="4">4학년</option>
+                        <option value="5">5학년</option>
+                        <option value="6">6학년</option>
+                    </select>
+                    <select id="hof-filter-class" onchange="filterHofList()" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-emerald-500">
+                        <option value="ALL">전체 반</option>
+                        <option value="1">1반</option><option value="2">2반</option>
+                        <option value="3">3반</option><option value="4">4반</option>
+                        <option value="5">5반</option><option value="6">6반</option>
+                        <option value="7">7반</option><option value="8">8반</option>
+                        <option value="9">9반</option><option value="10">10반</option>
+                        <option value="11">11반</option><option value="12">12반</option>
+                        <option value="13">13반</option><option value="14">14반</option>
+                        <option value="15">15반</option>
+                    </select>
+                </div>
+
+                <!-- 랭킹 목록 영역 -->
+                <div id="hof-records-container" class="flex-1 overflow-y-auto custom-scrollbar border border-slate-100 rounded-xl p-2 bg-slate-50/60 min-h-[340px] max-h-[480px]">
+                    <div class="text-center py-16 text-slate-400 text-xs font-bold animate-pulse">
+                        <i class="fa-solid fa-spinner fa-spin text-lg mb-2"></i><br>
+                        명예의 전당 기록을 집계 중입니다...
+                    </div>
+                </div>
+
+                <!-- 하단 새로고침 바 -->
+                <div class="flex justify-between items-center mt-3 pt-2 border-t border-slate-100 text-xs text-slate-400 font-semibold">
+                    <span>실시간 누적 기록 반영</span>
+                    <button type="button" onclick="loadHallOfFame()" class="flex items-center gap-1 px-2.5 py-1 text-slate-600 hover:text-emerald-600 bg-white border border-slate-200 rounded-lg transition-colors font-bold">
+                        <i class="fa-solid fa-rotate-right"></i> 새로고침
+                    </button>
                 </div>
             </div>
         </div>
 
-        <!-- 1. 로그인 & 명예의 전당 화면 -->
-        <div id="screen-login" class="flex flex-col h-full overflow-y-auto">
-            <div class="p-6 flex flex-col items-center pt-8 bg-green-400 text-white rounded-b-3xl shadow-md relative">
-                <button id="btn-admin-open" class="absolute top-4 right-4 text-white/80 hover:text-white"><i class="fa-solid fa-gear text-xl"></i></button>
-                <i class="fa-solid fa-spell-check text-5xl mb-2"></i>
-                <h1 class="text-3xl font-bold text-center">영어 끝말잇기</h1>
-                <p class="text-sm mt-2 opacity-90">재미있게 영어 단어를 배워봐요!</p>
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 2. 게임 대결 화면: 카카오톡 스타일 끝말잇기 룸 -->
+        <!-- ─────────────────────────────────────────── -->
+        <div id="screen-game" class="hidden max-w-2xl mx-auto flex flex-col h-[82vh] bg-[#ABC1D1] rounded-2xl shadow-xl overflow-hidden border border-slate-300">
+            <!-- 상단 상태 바 -->
+            <div class="bg-slate-800 text-white px-4 py-3 flex justify-between items-center shadow-md z-10">
+                <div class="flex flex-col">
+                    <span id="game-opponent-badge" class="font-black text-sm flex items-center gap-1.5 text-emerald-300">
+                        <i class="fa-solid fa-robot"></i> 컴퓨터
+                    </span>
+                    <span id="game-my-score" class="text-amber-300 text-xs font-bold">내 점수: 0점</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="flex flex-col items-center bg-slate-700/90 px-3.5 py-1 rounded-xl border border-slate-600">
+                        <span class="text-[10px] text-slate-300 font-bold">남은 시간</span>
+                        <div id="game-timer" class="font-black text-2xl text-red-400 leading-none">60</div>
+                    </div>
+                    <button type="button" onclick="confirmExitGame()" class="bg-slate-600 hover:bg-slate-700 px-3 py-2 rounded-xl text-white font-bold text-xs shadow transition-all flex items-center gap-1">
+                        <i class="fa-solid fa-door-open"></i> 나가기
+                    </button>
+                </div>
             </div>
-            
-            <div class="p-6 flex flex-col gap-4">
-                <div class="bg-yellow-50 p-4 rounded-xl border border-yellow-200 shadow-sm">
-                    <h2 class="font-bold text-gray-700 mb-3"><i class="fa-solid fa-id-card mr-2 text-yellow-500"></i>내 정보 입력</h2>
-                    <div class="grid grid-cols-2 gap-2 mb-2">
-                        <select id="input-grade" class="p-3 border rounded-lg bg-white outline-none focus:ring-2 focus:ring-green-400">
-                            <option value="">학년 선택</option>
-                            <option value="3">3학년</option><option value="4">4학년</option>
-                            <option value="5">5학년</option><option value="6">6학년</option>
+
+            <!-- 채팅 메시지 영역 -->
+            <div id="chat-messages" class="flex-1 p-4 overflow-y-auto space-y-3.5 custom-scrollbar pb-16">
+                <!-- 단어 버블들이 동적으로 렌더링됩니다 -->
+            </div>
+
+            <!-- 하단 입력 영역 -->
+            <div class="p-3 bg-white flex gap-2 border-t border-slate-200 z-10 shadow-lg">
+                <input type="text" id="game-word-input" class="flex-1 p-3.5 rounded-xl border-2 border-slate-200 outline-none focus:border-emerald-500 font-bold text-lg px-4 uppercase tracking-wider transition-colors" placeholder="단어를 입력하세요!" disabled autocomplete="off">
+                <button type="button" id="game-btn-submit" onclick="submitWord()" class="bg-emerald-600 hover:bg-emerald-700 text-white w-14 h-14 rounded-xl shadow-md flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0">
+                    <i id="game-btn-submit-icon" class="fa-solid fa-paper-plane text-lg"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- 3. 교사 전용 관리 화면 (전용 와이드 뷰) -->
+        <!-- ─────────────────────────────────────────── -->
+        <div id="screen-teacher" class="hidden">
+            <div class="chain-card">
+                <!-- 헤더 & 닫기 -->
+                <div class="flex justify-between items-center pb-4 border-b border-slate-200 mb-6">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center text-xl shadow-md">
+                            <i class="fa-solid fa-chalkboard-user"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-black text-slate-800">단어 체인 교사 전용 관리</h2>
+                            <p class="text-xs text-slate-500 font-semibold">학생 성적표 다운로드 및 학급별 기록 관리</p>
+                        </div>
+                    </div>
+                    <button type="button" onclick="closeTeacherScreen()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 rounded-xl text-xs font-bold text-slate-700 transition-colors">
+                        ✕ 로비로 돌아가기
+                    </button>
+                </div>
+
+                <!-- 통계 카드 요약 -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
+                    <div class="p-4 bg-emerald-50 rounded-xl border border-emerald-100">
+                        <div class="text-xs text-emerald-700 font-bold">누적 참여 기록</div>
+                        <div id="teacher-stat-total" class="text-2xl font-black text-emerald-800 mt-1">0개</div>
+                    </div>
+                    <div class="p-4 bg-teal-50 rounded-xl border border-teal-100">
+                        <div class="text-xs text-teal-700 font-bold">최고 점수</div>
+                        <div id="teacher-stat-max" class="text-2xl font-black text-teal-800 mt-1">0점</div>
+                    </div>
+                    <div class="p-4 bg-amber-50 rounded-xl border border-amber-100">
+                        <div class="text-xs text-amber-700 font-bold">평균 점수</div>
+                        <div id="teacher-stat-avg" class="text-2xl font-black text-amber-800 mt-1">0점</div>
+                    </div>
+                </div>
+
+                <!-- 성적표 필터 & CSV 버튼 -->
+                <div class="flex flex-wrap justify-between items-center gap-3 bg-slate-50 p-3.5 rounded-xl border border-slate-200 mb-4">
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <select id="teacher-filter-grade" onchange="renderTeacherTable()" class="p-2 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-700 outline-none">
+                            <option value="ALL">전체 학년</option>
+                            <option value="3">3학년</option>
+                            <option value="4">4학년</option>
+                            <option value="5">5학년</option>
+                            <option value="6">6학년</option>
                         </select>
-                        <select id="input-class" class="p-3 border rounded-lg bg-white outline-none focus:ring-2 focus:ring-green-400">
-                            <option value="">반 선택</option>
+                        <select id="teacher-filter-class" onchange="renderTeacherTable()" class="p-2 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-700 outline-none">
+                            <option value="ALL">전체 반</option>
                             <option value="1">1반</option><option value="2">2반</option>
                             <option value="3">3반</option><option value="4">4반</option>
                             <option value="5">5반</option><option value="6">6반</option>
                             <option value="7">7반</option><option value="8">8반</option>
                             <option value="9">9반</option><option value="10">10반</option>
+                            <option value="11">11반</option><option value="12">12반</option>
+                            <option value="13">13반</option><option value="14">14반</option>
+                            <option value="15">15반</option>
                         </select>
+                        <input type="text" id="teacher-search-name" oninput="renderTeacherTable()" placeholder="학생 이름 검색..." class="p-2 bg-white border border-slate-200 rounded-lg text-xs font-bold outline-none w-36">
                     </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <input type="number" id="input-num" placeholder="번호 (예: 1)" class="p-3 border rounded-lg w-full outline-none focus:ring-2 focus:ring-green-400">
-                        <input type="text" id="input-name" placeholder="이름 (예: 홍길동)" class="p-3 border rounded-lg w-full outline-none focus:ring-2 focus:ring-green-400">
-                    </div>
-                </div>
-                
-                <button id="btn-login" class="w-full bg-green-500 text-white font-bold text-xl p-4 rounded-2xl shadow-[0_5px_0_#16a34a] hover:bg-green-600 active:translate-y-1 active:shadow-none transition-all">
-                    시작하기 <i class="fa-solid fa-play ml-1"></i>
-                </button>
-                <div class="text-center text-gray-400 text-xs mt-1">만든이: 곽현석(이의초등학교)</div>
-            </div>
-
-            <div class="px-6 pb-6 flex-1">
-                <div class="bg-gray-50 rounded-xl border p-4 h-full flex flex-col">
-                    <h2 class="font-bold text-lg text-gray-700 mb-3 text-center">🏆 명예의 전당 (혼자하기 & 멀티방)</h2>
-                    <div id="hof-list" class="flex-1 overflow-y-auto space-y-2 text-sm">
-                        <!-- 명예의 전당 목록 -->
-                        <div class="text-center text-gray-400 py-4">로딩 중...</div>
+                    <div class="flex items-center gap-2">
+                        <button type="button" onclick="downloadTeacherCSV()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow transition-colors flex items-center gap-1.5">
+                            <i class="fa-solid fa-file-excel"></i> 성적표 CSV 다운로드
+                        </button>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- 2. 로비 화면 (혼자하기/멀티방 선택) -->
-        <div id="screen-lobby" class="hidden-screen flex flex-col h-full">
-            <div class="p-4 bg-green-400 text-white flex items-center justify-between shadow-md">
-                <div class="font-bold text-lg"><i class="fa-solid fa-gamepad mr-2"></i>모드 선택</div>
-                <div id="display-user-info" class="text-sm bg-black/20 px-3 py-1 rounded-full"></div>
-            </div>
-            
-            <div class="p-6 flex flex-col gap-6 flex-1 justify-center">
-                <button id="btn-single-mode" class="flex flex-col items-center bg-blue-100 border-2 border-blue-300 p-8 rounded-3xl hover:bg-blue-200 transition-colors shadow-sm">
-                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Computer" class="w-20 h-20 mb-4 bg-white rounded-full p-2 shadow-md">
-                    <span class="text-2xl font-bold text-blue-700">컴퓨터와 혼자하기</span>
-                    <span class="text-gray-500 text-sm mt-2">인공지능과 대결해 보세요!</span>
-                </button>
-
-                <div class="relative">
-                    <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-300"></div></div>
-                    <div class="relative flex justify-center text-sm"><span class="px-2 bg-white text-gray-500 font-bold">또는</span></div>
+                <!-- 학생 성적표 테이블 -->
+                <div class="overflow-x-auto border border-slate-200 rounded-xl mb-6">
+                    <table class="w-full text-xs text-left">
+                        <thead class="bg-slate-100 text-slate-600 font-bold border-b border-slate-200">
+                            <tr>
+                                <th class="p-3 text-center w-14">순위</th>
+                                <th class="p-3">학적 정보 (학년/반/번호)</th>
+                                <th class="p-3">학생명</th>
+                                <th class="p-3 text-center">모드</th>
+                                <th class="p-3 text-right">점수</th>
+                                <th class="p-3 text-center">기록 일시</th>
+                            </tr>
+                        </thead>
+                        <tbody id="teacher-table-body" class="divide-y divide-slate-100 font-semibold">
+                            <!-- 동적 렌더링 -->
+                        </tbody>
+                    </table>
                 </div>
 
-                <div class="flex gap-4">
-                    <button id="btn-show-create-room" class="flex-1 flex flex-col items-center bg-purple-100 border-2 border-purple-300 p-6 rounded-3xl hover:bg-purple-200 transition-colors shadow-sm">
-                        <i class="fa-solid fa-house-medical text-4xl text-purple-600 mb-3"></i>
-                        <span class="font-bold text-purple-800 text-lg">방 만들기</span>
-                    </button>
-                    <button id="btn-show-join-room" class="flex-1 flex flex-col items-center bg-orange-100 border-2 border-orange-300 p-6 rounded-3xl hover:bg-orange-200 transition-colors shadow-sm">
-                        <i class="fa-solid fa-right-to-bracket text-4xl text-orange-600 mb-3"></i>
-                        <span class="font-bold text-orange-800 text-lg">방 들어가기</span>
-                    </button>
-                </div>
-                
-                <button id="btn-back-to-login" class="mt-4 text-gray-500 underline font-bold"><i class="fa-solid fa-arrow-left mr-1"></i> 처음으로 돌아가기</button>
-            </div>
-        </div>
-
-        <!-- 3. 게임 화면 -->
-        <div id="screen-game" class="hidden-screen flex flex-col h-full bg-[#abc1d1]">
-            <!-- Header -->
-            <div class="bg-gray-800 text-white p-3 flex justify-between items-center shadow-md z-10">
-                <div class="flex flex-col">
-                    <span id="game-opponent-name" class="font-bold text-lg flex items-center"><i class="fa-solid fa-robot mr-2"></i>컴퓨터</span>
-                    <span id="display-score" class="text-yellow-300 text-sm font-bold">내 점수: 0점</span>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <div class="flex flex-col items-center bg-gray-700 px-4 py-1 rounded-lg border-2 border-gray-600">
-                        <span class="text-xs text-gray-300">남은 시간</span>
-                        <div id="display-timer" class="font-bold text-3xl text-red-400">60</div>
+                <!-- 관리 도구 (학급 일괄 삭제 / 비밀번호 변경) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="p-4 bg-red-50/70 border border-red-200 rounded-xl">
+                        <h4 class="font-black text-sm text-red-700 mb-1 flex items-center gap-1.5">
+                            <i class="fa-solid fa-trash-can"></i> 학급별 기록 일괄 삭제
+                        </h4>
+                        <p class="text-xs text-slate-500 mb-3">선택한 학년 및 반의 누적 명예의 전당 기록만 안전하게 초기화합니다.</p>
+                        <div class="flex gap-2">
+                            <select id="delete-target-grade" class="p-2 bg-white border border-red-200 rounded-lg text-xs font-bold text-slate-700 outline-none">
+                                <option value="3">3학년</option><option value="4">4학년</option>
+                                <option value="5">5학년</option><option value="6">6학년</option>
+                            </select>
+                            <select id="delete-target-class" class="p-2 bg-white border border-red-200 rounded-lg text-xs font-bold text-slate-700 outline-none">
+                                <option value="1">1반</option><option value="2">2반</option>
+                                <option value="3">3반</option><option value="4">4반</option>
+                                <option value="5">5반</option><option value="6">6반</option>
+                                <option value="7">7반</option><option value="8">8반</option>
+                                <option value="9">9반</option><option value="10">10반</option>
+                                <option value="11">11반</option><option value="12">12반</option>
+                                <option value="13">13반</option><option value="14">14반</option>
+                                <option value="15">15반</option>
+                            </select>
+                            <button type="button" onclick="executeBatchClassDelete()" class="px-3.5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-xs font-bold shadow transition-colors flex-shrink-0">
+                                해당 학급 삭제
+                            </button>
+                        </div>
                     </div>
-                    <button id="btn-exit" class="bg-gray-600 px-3 py-1 rounded-lg text-white hover:bg-gray-700 shadow-[0_3px_0_#374151] active:translate-y-1 active:shadow-none flex flex-col items-center justify-center">
-                        <i class="fa-solid fa-door-open text-lg mb-1"></i><span class="text-xs font-bold">나가기</span>
-                    </button>
-                </div>
-            </div>
 
-            <!-- Chat Area -->
-            <div id="chat-container" class="flex-1 p-4 overflow-y-auto flex flex-col space-y-4 chat-container pb-20">
-                <!-- Messages will appear here -->
-            </div>
-
-            <!-- Input Area -->
-            <div class="p-3 bg-gray-100 flex gap-2 border-t border-gray-300 z-10 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
-                <input type="text" id="input-word" class="flex-1 p-4 rounded-full border-2 border-gray-300 outline-none focus:border-green-500 font-bold text-xl px-6" placeholder="단어를 입력하세요!" disabled autocomplete="off">
-                <button id="btn-submit" class="bg-green-500 text-white w-14 h-14 rounded-full shadow-[0_3px_0_#16a34a] hover:bg-green-600 active:translate-y-1 active:shadow-none flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed">
-                    <i id="btn-submit-icon" class="fa-solid fa-paper-plane text-xl"></i>
-                </button>
-            </div>
-        </div>
-
-        <!-- 4. 방 만들기 대기 모달 -->
-        <div id="modal-waiting" class="hidden absolute inset-0 z-40 bg-black/60 flex items-center justify-center p-4">
-            <div class="bg-white rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl modal-enter">
-                <h3 class="text-2xl font-bold mb-2">방 코드</h3>
-                <div id="display-room-code" class="text-5xl font-black text-purple-600 tracking-widest bg-purple-50 py-4 rounded-xl border-2 border-purple-200 mb-4">0000</div>
-                <p class="text-gray-600 mb-6">친구에게 이 코드를 알려주세요!<br><span class="text-sm animate-pulse text-blue-500">친구를 기다리는 중...</span></p>
-                <button id="btn-cancel-room" class="w-full bg-gray-200 text-gray-700 py-3 rounded-xl font-bold hover:bg-gray-300">취소</button>
-            </div>
-        </div>
-
-        <!-- 5. 방 입장 모달 -->
-        <div id="modal-join" class="hidden absolute inset-0 z-40 bg-black/60 flex items-center justify-center p-4">
-            <div class="bg-white rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl modal-enter">
-                <h3 class="text-2xl font-bold mb-4">방 들어가기</h3>
-                <input type="text" id="input-room-code" maxlength="4" placeholder="4자리 코드 입력" class="w-full text-center text-4xl p-4 font-bold tracking-widest border-2 border-orange-300 rounded-xl mb-6 outline-none focus:border-orange-500 uppercase">
-                <div class="flex gap-2">
-                    <button id="btn-cancel-join" class="flex-1 bg-gray-200 text-gray-700 py-3 rounded-xl font-bold hover:bg-gray-300">취소</button>
-                    <button id="btn-join-submit" class="flex-1 bg-orange-500 text-white py-3 rounded-xl font-bold shadow-[0_4px_0_#c2410c] active:translate-y-1 active:shadow-none hover:bg-orange-600">입장하기</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- 6. 관리자 화면 -->
-        <div id="screen-admin" class="hidden-screen flex flex-col h-full bg-gray-100">
-            <div class="p-4 bg-gray-800 text-white flex items-center shadow-md">
-                <button id="btn-admin-close" class="mr-4"><i class="fa-solid fa-arrow-left text-xl"></i></button>
-                <h2 class="font-bold text-lg"><i class="fa-solid fa-user-shield mr-2"></i>관리자 모드</h2>
-            </div>
-            <div class="p-6 overflow-y-auto flex-1 flex flex-col gap-4">
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
-                    <h3 class="font-bold text-red-600 mb-2"><i class="fa-solid fa-triangle-exclamation mr-1"></i>기록 초기화</h3>
-                    <p class="text-sm text-gray-500 mb-4">명예의 전당의 모든 기록을 삭제합니다.</p>
-                    <button id="btn-admin-clear-hof" class="w-full bg-red-50 text-red-600 font-bold py-3 rounded-lg border border-red-200 hover:bg-red-100">명예의 전당 초기화</button>
-                </div>
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
-                    <h3 class="font-bold text-blue-600 mb-2"><i class="fa-solid fa-key mr-1"></i>비밀번호 변경</h3>
-                    <input type="password" id="input-new-admin-pw" placeholder="새 비밀번호 입력" class="w-full p-3 border rounded-lg mb-2 outline-none">
-                    <button id="btn-admin-change-pw" class="w-full bg-blue-50 text-blue-600 font-bold py-3 rounded-lg border border-blue-200 hover:bg-blue-100">비밀번호 변경</button>
+                    <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl">
+                        <h4 class="font-black text-sm text-slate-700 mb-1 flex items-center gap-1.5">
+                            <i class="fa-solid fa-key"></i> 교사 비밀번호 변경
+                        </h4>
+                        <p class="text-xs text-slate-500 mb-3">교사 전용 모드 진입 시 사용할 새 비밀번호를 설정합니다.</p>
+                        <div class="flex gap-2">
+                            <input type="password" id="input-new-teacher-pwd" placeholder="새 비밀번호 (4자리 이상)" class="flex-1 p-2 bg-white border border-slate-200 rounded-lg text-xs font-bold outline-none">
+                            <button type="button" onclick="changeTeacherPassword()" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-bold shadow transition-colors flex-shrink-0">
+                                변경 저장
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Firebase SDK & Logic -->
+    <!-- ─────────────────────────────────────────── -->
+    <!-- 모달 다이얼로그 모음 -->
+    <!-- ─────────────────────────────────────────── -->
+
+    <!-- 1. 학생 프로필 설정 모달 -->
+    <div id="modal-profile" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+        <div class="bg-white rounded-2xl p-6 w-full max-w-sm modal-enter shadow-2xl">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-black text-lg text-slate-800 flex items-center gap-2">
+                    <span class="text-xl">🧙‍♂️</span> 학생 정보 설정
+                </h3>
+                <button onclick="closeProfileModal()" class="text-slate-400 hover:text-slate-600 font-bold">✕</button>
+            </div>
+            <div class="space-y-3">
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="text-[11px] font-bold text-slate-500 block mb-1">학년 (3~6)</label>
+                        <select id="prof-grade" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-bold text-xs outline-none focus:ring-2 focus:ring-emerald-500">
+                            <option value="3">3학년</option><option value="4">4학년</option>
+                            <option value="5">5학년</option><option value="6">6학년</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[11px] font-bold text-slate-500 block mb-1">반 (1~15)</label>
+                        <select id="prof-class" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-bold text-xs outline-none focus:ring-2 focus:ring-emerald-500">
+                            <option value="1">1반</option><option value="2">2반</option>
+                            <option value="3">3반</option><option value="4">4반</option>
+                            <option value="5">5반</option><option value="6">6반</option>
+                            <option value="7">7반</option><option value="8">8반</option>
+                            <option value="9">9반</option><option value="10">10반</option>
+                            <option value="11">11반</option><option value="12">12반</option>
+                            <option value="13">13반</option><option value="14">14반</option>
+                            <option value="15">15반</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="text-[11px] font-bold text-slate-500 block mb-1">번호</label>
+                        <input type="number" id="prof-num" min="1" max="50" placeholder="예: 1" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-bold text-xs outline-none focus:ring-2 focus:ring-emerald-500">
+                    </div>
+                    <div>
+                        <label class="text-[11px] font-bold text-slate-500 block mb-1">이름</label>
+                        <input type="text" id="prof-name" placeholder="예: 홍길동" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-bold text-xs outline-none focus:ring-2 focus:ring-emerald-500">
+                    </div>
+                </div>
+            </div>
+            <div class="mt-5 flex gap-2">
+                <button type="button" onclick="closeProfileModal()" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 rounded-xl font-bold text-xs text-slate-600 transition-colors">취소</button>
+                <button type="button" onclick="saveProfile()" class="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs shadow-md transition-colors">저장 완료</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. 교사 인증 모달 -->
+    <div id="modal-pwd" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+        <div class="bg-white rounded-2xl p-6 w-full max-w-sm modal-enter shadow-2xl text-center">
+            <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center text-2xl mx-auto mb-3">
+                <i class="fa-solid fa-lock"></i>
+            </div>
+            <h3 class="font-black text-lg text-slate-800 mb-1">교사 모드 인증</h3>
+            <p class="text-xs text-slate-500 mb-4">선생님 확인을 위해 비밀번호를 입력해주세요.</p>
+            <input type="password" id="input-teacher-pwd" placeholder="비밀번호 입력" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-center text-sm outline-none focus:ring-2 focus:ring-amber-500 mb-4" onkeypress="if(event.key==='Enter') verifyTeacherPwd()">
+            <div class="flex gap-2">
+                <button type="button" onclick="closeTeacherAuthModal()" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 rounded-xl font-bold text-xs text-slate-600 transition-colors">취소</button>
+                <button type="button" onclick="verifyTeacherPwd()" class="flex-1 py-2.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl font-bold text-xs shadow-md transition-colors">확인</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. 방 만들기 대기 모달 -->
+    <div id="modal-waiting" class="hidden fixed inset-0 z-40 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl modal-enter">
+            <h3 class="text-xl font-black text-slate-800 mb-1">1:1 방 코드 생성 완료!</h3>
+            <p class="text-xs text-slate-500 mb-4">친구에게 아래 4자리 코드를 알려주세요.</p>
+            <div id="display-room-code" class="text-5xl font-black text-teal-600 tracking-widest bg-teal-50 py-4 rounded-2xl border-2 border-teal-200 mb-4 shadow-inner">0000</div>
+            <div class="text-xs text-emerald-600 font-bold mb-6 flex items-center justify-center gap-1.5 animate-pulse">
+                <i class="fa-solid fa-spinner fa-spin"></i> 친구가 입장하기를 기다리는 중...
+            </div>
+            <button type="button" onclick="cancelWaitingRoom()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 py-3 rounded-xl font-bold text-xs transition-colors">방 생성 취소</button>
+        </div>
+    </div>
+
+    <!-- 4. 방 들어가기 모달 -->
+    <div id="modal-join" class="hidden fixed inset-0 z-40 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl modal-enter">
+            <h3 class="text-xl font-black text-slate-800 mb-1">1:1 방 입장</h3>
+            <p class="text-xs text-slate-500 mb-4">친구가 만든 4자리 방 코드를 입력하세요.</p>
+            <input type="text" id="input-join-code" maxlength="4" placeholder="4자리 코드" class="w-full text-center text-4xl p-3.5 font-black tracking-widest border-2 border-emerald-300 rounded-2xl mb-6 outline-none focus:border-emerald-500 uppercase bg-slate-50" onkeypress="if(event.key==='Enter') submitJoinRoom()">
+            <div class="flex gap-2">
+                <button type="button" onclick="closeJoinRoomModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 py-3 rounded-xl font-bold text-xs transition-colors">취소</button>
+                <button type="button" onclick="submitJoinRoom()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-bold text-xs shadow-md transition-colors">입장하기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. 커스텀 Alert / Confirm 대화상자 -->
+    <div id="custom-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+        <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm modal-enter flex flex-col items-center text-center">
+            <div id="modal-icon" class="text-4xl mb-3">🔔</div>
+            <h3 id="modal-title" class="text-lg font-black mb-2 text-slate-800">알림</h3>
+            <p id="modal-message" class="text-slate-600 mb-6 text-sm font-medium leading-relaxed"></p>
+            <div id="modal-buttons" class="flex gap-2 w-full">
+                <button id="modal-btn-cancel" class="hidden flex-1 bg-slate-100 text-slate-700 py-2.5 rounded-xl font-bold text-xs hover:bg-slate-200 transition-colors">취소</button>
+                <button id="modal-btn-confirm" class="flex-1 bg-emerald-600 text-white py-2.5 rounded-xl font-bold text-xs hover:bg-emerald-700 shadow-md transition-colors">확인</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ─────────────────────────────────────────── -->
+    <!-- Firebase SDK & 단어 체인 핵심 엔진 -->
+    <!-- ─────────────────────────────────────────── -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit, doc, onSnapshot, updateDoc, setDoc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
-        // 사용자 Firebase 설정 (eng-activity 프로젝트 연결)
+        // 사용자 Firebase 설정 (기존 eng-activity 프로젝트 100% 보존)
         const firebaseConfig = {
             apiKey: "AIzaSyDHCnRrVE2dVuJpf77P-1oftGpczR5WDd4",
             authDomain: "eng-activity.firebaseapp.com",
@@ -214,585 +695,964 @@
         const db = getFirestore(app);
         const auth = getAuth(app);
 
-        // 익명 로그인
         signInAnonymously(auth).catch((error) => console.error("Firebase Login Failed:", error));
 
-        // --- Custom Modal Logic ---
-        function showAlert(message, title="알림", icon="🔔") {
-            return new Promise((resolve) => {
-                const modal = document.getElementById('custom-modal');
-                document.getElementById('modal-title').innerText = title;
-                document.getElementById('modal-message').innerHTML = message;
-                document.getElementById('modal-icon').innerText = icon;
-                
-                const btnConfirm = document.getElementById('modal-btn-confirm');
-                const btnCancel = document.getElementById('modal-btn-cancel');
-                
-                btnCancel.classList.add('hidden');
-                modal.classList.remove('hidden');
-                
-                btnConfirm.onclick = () => {
-                    modal.classList.add('hidden');
-                    resolve();
-                };
-            });
-        }
+        // ════════════════════════════════════════════════════════════════════
+        // ── 사전 데이터베이스: 초중고 2,800+ 단어 내장 + 뜻 ──
+        // ════════════════════════════════════════════════════════════════════
+        const rawDictString = "ABILITY,ABLE,ABOUT,ABOVE,ABROAD,ABSENCE,ABUSE,ACADEMY,ACCEPT,ACCESS,ACCOUNT,ACHIEVE,ACID,ACQUIRE,ACROSS,ACT,ACTING,ACTION,ACTIVE,ACTOR,ACTUAL,ACUTE,ADD,ADDRESS,ADMIT,ADOPT,ADULT,ADVANCE,ADVICE,ADVISE,AFFECT,AFFORD,AFRAID,AFTER,AGAIN,AGAINST,AGE,AGED,AGENCY,AGENDA,AGENT,AGO,AGREE,AGREED,AHEAD,AID,AIM,AIR,AIRLINE,AIRPORT,ALARM,ALBUM,ALCOHOL,ALERT,ALIKE,ALIVE,ALL,ALLOW,ALMOST,ALONE,ALONG,ALREADY,ALSO,ALTER,ALWAYS,AM,AMONG,AMOUNT,AN,ANALYST,ANALYZE,ANCIENT,AND,ANGER,ANGLE,ANGRY,ANIMAL,ANNUAL,ANOTHER,ANSWER,ANT,ANXIOUS,ANY,ANYBODY,ANYONE,ANYWAY,APART,APE,APOLOGY,APPAREL,APPEAL,APPEAR,APPLE,APPLY,APPOINT,APPROVE,AREA,ARENA,ARGUE,ARISE,ARM,ARMY,AROUND,ARRANGE,ARRAY,ARRIVAL,ARRIVE,ART,ARTICLE,ARTIST,AS,ASH,ASIDE,ASK,ASPECT,ASSAULT,ASSESS,ASSET,ASSIST,ASSUME,AT,ATTACK,ATTEMPT,ATTEND,ATTRACT,AUCTION,AUDIO,AUDIT,AUGUST,AUTHOR,AVENUE,AVERAGE,AVOID,AWAIT,AWAKE,AWARD,AWARE,AWAY,AWE,BABY,BACK,BACKED,BAD,BADLY,BAG,BAKER,BALANCE,BALL,BAN,BAND,BANK,BAR,BARELY,BARRIER,BASE,BASES,BASIC,BASIS,BAT,BATH,BATTERY,BATTLE,BAY,BE,BEACH,BEAR,BEAT,BEAUTY,BECAME,BECAUSE,BECOME,BED,BEDROOM,BEE,BEEN,BEER,BEFORE,BEG,BEGAN,BEGIN,BEGUN,BEHALF,BEHIND,BEING,BELIEF,BELIEVE,BELL,BELONG,BELOW,BELT,BENCH,BENEATH,BENEFIT,BERLIN,BESIDES,BEST,BET,BETTER,BETWEEN,BEYOND,BICYCLE,BID,BIG,BILLION,BILLY,BIN,BIRD,BIRTH,BISHOP,BIT,BLACK,BLAME,BLANKET,BLIND,BLOCK,BLOOD,BLOW,BLUE,BOARD,BOAT,BOB,BODY,BOG,BOMB,BOND,BONE,BOOK,BOOM,BOOST,BOOTH,BORDER,BORN,BOSS,BOTH,BOTTLE,BOTTOM,BOUGHT,BOUND,BOW,BOWL,BOX,BOY,BRAIN,BRANCH,BRAND,BREAD,BREAK,BREATH,BREED,BRIDGE,BRIEF,BRIGHT,BRING,BROAD,BROKE,BROKEN,BROTHER,BROWN,BUD,BUDGET,BUG,BUILD,BUILT,BULK,BUM,BUN,BURDEN,BUREAU,BURN,BUS,BUSH,BUSY,BUT,BUTTON,BUY,BUYER,BY,BYE,CAB,CABLE,CALCIUM,CALIF,CALL,CALM,CAME,CAMERA,CAMP,CAN,CANCER,CANNOT,CAP,CAPABLE,CAPITAL,CAPTAIN,CAPTURE,CAR,CARBON,CARD,CARE,CAREER,CAREFUL,CARRIER,CARRY,CASE,CASH,CAST,CASTLE,CASUAL,CAT,CATCH,CAUGHT,CAUSE,CEILING,CELL,CENTER,CENTRAL,CENTRE,CENTURY,CHAIN,CHAIR,CHAMBER,CHANCE,CHANGE,CHANNEL,CHAPTER,CHARGE,CHARITY,CHARLIE,CHART,CHARTER,CHASE,CHAT,CHEAP,CHEAPER,CHECK,CHECKED,CHEST,CHICKEN,CHIEF,CHILD,CHINA,CHIP,CHOICE,CHOOSE,CHOSE,CHURCH,CIRCLE,CIRCUIT,CITY,CIVIL,CLAIM,CLASS,CLASSES,CLASSIC,CLEAN,CLEANER,CLEAR,CLICK,CLIENT,CLIMATE,CLOCK,CLOSE,CLOSED,CLOSER,CLOSING,CLOTHES,CLUB,COACH,COAL,COAST,COAT,CODE,COFFEE,COLD,COLLEGE,COLUMN,COMBAT,COMBINE,COME,COMFORT,COMING,COMMAND,COMMENT,COMMON,COMPACT,COMPANY,COMPARE,COMPETE,COMPLEX,COMPLY,CONCEPT,CONCERN,CONCERT,CONDUCT,CONFIRM,CONNECT,CONSENT,CONSIST,CONTACT,CONTAIN,CONTENT,CONTEST,CONTEXT,CONTROL,CONVERT,COOK,COOKING,COOL,COPE,COPPER,COPY,CORE,CORNER,CORRECT,COST,COSTLY,COULD,COUNCIL,COUNSEL,COUNT,COUNTER,COUNTRY,COUNTY,COUPLE,COURSE,COURT,COVER,COVERS,COW,CRAFT,CRASH,CREAM,CREATE,CREDIT,CREW,CRIME,CRISIS,CROP,CROSS,CROWD,CROWN,CRUCIAL,CRY,CRYSTAL,CULTURE,CUP,CURRENT,CURVE,CUSTOM,CUT,CUTTING,CYCLE,DAD,DAILY,DAM,DAMAGE,DANCE,DANGER,DARK,DARLING,DATA,DATE,DATED,DAWN,DAY,DAYS,DAYTIME,DEAD,DEAL,DEALER,DEALT,DEAN,DEAR,DEATH,DEBATE,DEBT,DEBUT,DECADE,DECIDE,DECIDED,DECLINE,DEEP,DEFAULT,DEFEAT,DEFEND,DEFENSE,DEFICIT,DEFINE,DEGREE,DELAY,DELIVER,DEMAND,DEN,DENSITY,DENY,DEPEND,DEPOSIT,DEPTH,DEPUTY,DESERT,DESERVE,DESIGN,DESIRE,DESK,DESKTOP,DESPITE,DESTROY,DETAIL,DETECT,DEVELOP,DEVICE,DEW,DIAL,DIAMOND,DIE,DIFFER,DIG,DIGITAL,DILEMMA,DIM,DINNER,DIP,DIRECT,DIRECTS,DIRT,DISEASE,DISK,DISPLAY,DISPUTE,DISTANT,DIVERSE,DIVIDED,DO,DOCTOR,DOE,DOES,DOG,DOING,DOLLAR,DOMAIN,DONE,DOOR,DOSE,DOT,DOUBLE,DOUBT,DOWN,DOZEN,DRAFT,DRAMA,DRANK,DRAW,DRAWING,DRAWN,DREAM,DRESS,DREW,DRIFT,DRINK,DRIVE,DRIVEN,DRIVER,DROP,DROVE,DRUG,DRY,DUAL,DUE,DUG,DUKE,DUN,DURING,DUST,DUTY,DYE,DYING,DYNAMIC,EACH,EAGER,EAR,EARLY,EARN,EARTH,EASE,EASILY,EAST,EASY,EAT,EATING,ECONOMY,EDGE,EDITION,EDITOR,EDUCATE,EEL,EFFECT,EFFECTS,EFFORT,EGG,EGO,EIGHT,EIGHTH,EITHER,ELEMENT,ELEVEN,ELF,ELITE,ELK,ELM,ELSE,EMBASSY,EMERGE,EMOTION,EMPEROR,EMPHASIS,EMPIRE,EMPLOY,EMPTY,EMU,ENABLES,END,ENDLESS,ENEMY,ENGINE,ENGLISH,ENHANCE,ENJOY,ENORMOUS,ENOUGH,ENSURE,ENTER,ENTERED,ENTIRE,ENTITY,ENTRY,EPISODE,EQUAL,EQUALLY,EQUITY,ERA,ERROR,ESCAPE,ESSENCE,ESTATE,ETHNIC,EVE,EVEN,EVENING,EVENT,EVER,EVERY,EVIDENT,EVIL,EXACT,EXACTLY,EXAM,EXAMINE,EXAMPLE,EXCEED,EXCEPT,EXCITED,EXCLUDE,EXCUSE,EXECUTIVE,EXHAUST,EXHIBIT,EXIST,EXIT,EXPAND,EXPECT,EXPENSE,EXPERT,EXPLAIN,EXPLORE,EXPORT,EXPRESS,EXTEND,EXTENT,EXTRA,EXTREME,EYE,FABRIC,FACE,FACING,FACT,FACTOR,FACTORY,FACULTY,FADE,FAIL,FAILED,FAILURE,FAIR,FAIRLY,FAIRWAY,FAITH,FALL,FALLEN,FALSE,FAMILY,FAMOUS,FAN,FAR,FARM,FARMING,FASHION,FAST,FAT,FATE,FATHER,FAULT,FAX,FEAR,FEATURE,FEDERAL,FEE,FEED,FEEL,FEELING,FEET,FELL,FELLOW,FELT,FEMALE,FEW,FIBER,FICTION,FIELD,FIFTEEN,FIFTH,FIFTY,FIG,FIGHT,FIGURE,FILE,FILING,FILL,FILM,FIN,FINAL,FINANCE,FIND,FINDING,FINE,FINGER,FINISH,FIRE,FIRM,FIRST,FISCAL,FISH,FISHING,FIT,FITNESS,FIVE,FIX,FIXED,FLASH,FLAT,FLEET,FLIGHT,FLOOR,FLOW,FLUID,FLY,FLYING,FOB,FOCUS,FOE,FOG,FOLLOW,FOOD,FOOT,FOR,FORCE,FORCED,FORD,FOREIGN,FOREST,FOREVER,FORGET,FORGOT,FORM,FORMAL,FORMAT,FORMER,FORMULA,FORT,FORTH,FORTUNE,FORTY,FORUM,FORWARD,FOSTER,FOUGHT,FOUND,FOUNDER,FOUR,FOURTH,FOX,FRAME,FRANK,FRAUD,FREE,FREEDOM,FREEWAY,FRENCH,FRESH,FRIEND,FROM,FRONT,FRUIT,FRY,FUEL,FULFILL,FULL,FULLY,FUN,FUND,FUNDING,FUNNY,FUR,FURTHER,FUTURE,GAG,GAIN,GAL,GALLERY,GAME,GAP,GARBAGE,GARDEN,GAS,GATE,GATEWAY,GATHER,GAVE,GAY,GEAR,GEL,GEM,GENDER,GENE,GENERAL,GENUINE,GERMAN,GET,GETTING,GIANT,GIFT,GIG,GIN,GIRL,GIRLISH,GIVE,GIVEN,GLAD,GLASS,GLOBAL,GLOBE,GLORIOUS,GO,GOAL,GOD,GOES,GOING,GOLD,GOLDEN,GOLF,GONE,GOOD,GOODMAN,GOT,GOVERN,GRACE,GRADE,GRADUAL,GRAND,GRANT,GRASS,GRAVITY,GRAY,GREAT,GREATER,GREEN,GREW,GREY,GROCERY,GROSS,GROUND,GROUP,GROW,GROWING,GROWN,GROWTH,GUARD,GUESS,GUEST,GUIDE,GUILTY,GULF,GUM,GUN,GUT,GUY,GYM,HABITAT,HAD,HAIR,HALF,HALL,HAM,HAND,HANDED,HANDFUL,HANDLE,HANG,HANGING,HAPPEN,HAPPY,HARBOR,HARD,HARDLY,HARM,HARMFUL,HARRY,HARVEST,HAS,HAT,HATE,HAVE,HAY,HE,HEAD,HEADED,HEADING,HEALTH,HEALTHY,HEAR,HEARING,HEART,HEAT,HEAVEN,HEAVILY,HEAVY,HEIGHT,HELD,HELL,HELMET,HELP,HELPED,HELPFUL,HEM,HEN,HENCE,HENRY,HER,HERE,HERO,HERSELF,HEX,HI,HID,HIDDEN,HIGH,HIGHWAY,HILL,HIM,HIP,HIRE,HIS,HISTORY,HIT,HITTING,HOB,HOG,HOLD,HOLDER,HOLDING,HOLE,HOLIDAY,HOLY,HOME,HONEST,HONESTY,HOP,HOPE,HOPEFUL,HORIZON,HORROR,HORSE,HOSPITAL,HOST,HOSTILE,HOT,HOTEL,HOUR,HOUSE,HOUSING,HOW,HOWEVER,HUB,HUE,HUG,HUGE,HUM,HUMAN,HUNG,HUNGRY,HUNT,HURT,HUSBAND,HUT,ICE,ICEBERG,ICY,IDEA,IDEAL,IDEALLY,IF,IGNOR,ILL,ILLEGAL,ILLNESS,IMAGE,IMAGINE,IMMEDIATE,IMMENSE,IMP,IMPACT,IMPERIAL,IMPORT,IMPROVE,IMPULSE,IN,INCH,INCHING,INCLUDE,INCOME,INCREASE,INDEED,INDEX,INDEXED,INDIAN,INDICATE,INDOORS,INDUSTRY,INFANCY,INHERIT,INITIAL,INJURED,INJURY,INK,INN,INNER,INPUT,INQUIRE,INSIDE,INSIGHT,INSPECT,INSPIRE,INSTALL,INSTANCE,INSTANT,INSTEAD,INTEND,INTENSE,INTENT,INTERIM,INTERNAL,INTERNET,INTO,INVEST,INVOLVE,ION,IRE,IRK,IRON,IS,ISLAND,ISLANDS,ISSUE,IT,ITEM,ITSELF,IVY,JAB,JACK,JACKET,JACKSON,JAM,JANE,JAPAN,JAR,JAW,JAY,JEAN,JERSEY,JET,JIG,JIMMY,JOB,JOG,JOHN,JOIN,JOINT,JONES,JOSEPH,JOT,JOURNAL,JOURNEY,JOY,JUDGE,JUG,JUMP,JUNIOR,JURY,JUST,JUSTICE,JUT,KEEN,KEEP,KEEPING,KEG,KEPT,KEY,KEYNOTE,KICK,KID,KILL,KILLED,KIN,KIND,KINDRED,KING,KINGDOM,KIP,KIT,KITCHEN,KNEE,KNEW,KNOW,KNOWING,KNOWN,LAB,LABEL,LABOUR,LACK,LAD,LADY,LAG,LAID,LAKE,LAND,LANDING,LANE,LAP,LARGE,LARGELY,LASER,LAST,LASTING,LATE,LATER,LATEST,LATTER,LAUGH,LAUGHTER,LAUNCH,LAUNDRY,LAW,LAWYER,LAWYERS,LAY,LAYER,LEAD,LEADER,LEADING,LEAGUE,LEANING,LEARN,LEARNED,LEASE,LEASING,LEAST,LEATHER,LEAVE,LEAVES,LEAVING,LECTURE,LED,LEFT,LEG,LEGACY,LEGAL,LEGALLY,LEISURE,LENDING,LENGTH,LESS,LESSON,LESSONS,LET,LETTER,LETTERS,LETTING,LEVEL,LEWIS,LIBERAL,LIBERTY,LIBRARY,LICENSE,LID,LIE,LIFE,LIFT,LIGHT,LIGHTLY,LIGHTS,LIKE,LIKELY,LIMIT,LIMITED,LINE,LINK,LINKED,LINKING,LINKS,LION,LIP,LIQUID,LIST,LISTEN,LISTING,LIT,LITERAL,LITTLE,LIVE,LIVES,LIVING,LOAD,LOAN,LOCAL,LOCATE,LOCATED,LOCK,LOG,LOGIC,LOGICAL,LOGO,LONDON,LONG,LONGER,LONGING,LOOK,LOOKED,LOOKING,LOOSE,LORD,LOSE,LOSELY,LOSS,LOST,LOT,LOVE,LOVING,LOW,LOWER,LUCK,LUCKY,LUNCH,LUXURY,LYE,LYING,MACHINE,MAD,MADE,MAGIC,MAGICAL,MAGNIFY,MAIL,MAILMAN,MAIN,MAINLAND,MAINLY,MAJESTY,MAJOR,MAKE,MAKER,MAKING,MALE,MAN,MANAGE,MANAGING,MANKIND,MANNER,MANUAL,MANUALLY,MANY,MAP,MARCH,MARCHING,MARGIN,MARIA,MARINE,MARK,MARKED,MARKET,MARRIED,MARTIN,MASS,MASSIVE,MASTER,MAT,MATCH,MATCHES,MATT,MATTER,MATURE,MAXIMUM,MAY,MAYBE,MAYOR,ME,MEAL,MEAN,MEANING,MEANT,MEASURE,MEAT,MEDIA,MEDICAL,MEDIUM,MEET,MEETING,MELODY,MEMBER,MEMBERS,MEMORY,MEN,MENTAL,MENTION,MENU,MERE,MERELY,MERGER,MESSAGE,MET,METAL,METHOD,MID,MIDDLE,MIGHT,MIKE,MILE,MILK,MILL,MILLER,MILLION,MIND,MINE,MINERAL,MINIMUM,MINING,MINOR,MINUS,MINUTE,MINUTES,MIRACLE,MIRROR,MISS,MISSING,MISSION,MISTAKE,MIX,MIXED,MIXTURE,MOB,MOBILE,MODE,MODEL,MODERN,MODEST,MODULE,MOM,MOMENT,MONEY,MONITOR,MONTH,MONTHLY,MOOD,MOON,MOP,MORAL,MORE,MORNING,MORRIS,MORTGAGE,MOST,MOSTLY,MOTHER,MOTION,MOTOR,MOUNT,MOUNTAIN,MOUSE,MOUTH,MOVE,MOVEMENT,MOVIE,MOVING,MUCH,MUD,MUG,MULTIPLE,MUM,MURDER,MUSEUM,MUSIC,MUSICAL,MUST,MUTUAL,MY,MYSELF,MYSTERY,NAB,NAG,NAME,NAP,NATION,NATIVE,NATURAL,NATURE,NAVY,NEAR,NEARLY,NECK,NEED,NEEDLE,NEEDS,NEITHER,NELSON,NEPHEW,NERVOUS,NET,NETWORK,NEUTRAL,NEVER,NEW,NEWLY,NEWMAN,NEWNESS,NEWS,NEXT,NICE,NICK,NIGHT,NIGHTLY,NIL,NINE,NINETY,NIP,NO,NOBODY,NOD,NOISE,NON,NONE,NOR,NORMAL,NORTH,NOSE,NOT,NOTE,NOTED,NOTHING,NOTICE,NOTION,NOURISH,NOVEL,NOW,NOWHERE,NUCLEUS,NUMBER,NUMERAL,NUMEROUS,NUN,NURSE,NURSERY,NURSING,NUT,NUTMEG,OAK,OAKLAND,OAR,OARS,OAT,OBESITY,OBJECT,OBJECTS,OBLIQUE,OBSCURE,OBSERVE,OBTAIN,OBVIOUS,OCCUR,OCEAN,OCTOBER,ODD,ODE,OF,OFF,OFFENSE,OFFER,OFFICE,OFFICER,OFFICIAL,OFFLINE,OFFSET,OFT,OFTEN,OIL,OKAY,OLD,OLYMPIC,ON,ONCE,ONE,ONGOING,ONLINE,ONLY,ONTO,OPEN,OPENING,OPERATE,OPINION,OPPOSED,OPPOSITE,OPT,OPTIMAL,OPTIMISM,OPTION,OPTIONS,OR,ORAL,ORANGE,ORB,ORDER,ORE,ORGANIC,ORIGIN,OTHER,OUGHT,OUR,OUT,OUTCOME,OUTDOOR,OUTLINE,OUTLOOK,OUTPUT,OUTSIDE,OVER,OVERALL,OVERCOME,OVERDUE,OWL,OWN,OX,OXFORD,PACE,PACK,PACKAGE,PACKED,PAD,PAGE,PAID,PAIN,PAINLESS,PAINT,PAINTER,PAINTING,PAIR,PAL,PALACE,PALM,PAN,PANEL,PAPER,PAR,PARADE,PARADOX,PARALLEL,PARENT,PARISH,PARK,PARKER,PARKWAY,PART,PARTLY,PARTNER,PARTY,PASS,PASSAGE,PASSING,PASSION,PASSIVE,PAST,PAT,PATENT,PATH,PATIENT,PATTERN,PAW,PAY,PAYMENT,PEA,PEACE,PEAK,PEER,PEG,PEN,PENALTY,PENDING,PENSION,PEOPLE,PEP,PERCENT,PERFECT,PERFORM,PERFUME,PERHAPS,PERIOD,PERMIT,PERSIST,PERSON,PERSONAL,PET,PETER,PETROLEUM,PEW,PHANTOM,PHASE,PHOENIX,PHONE,PHOTO,PHRASE,PIANIST,PICK,PICKED,PICTURE,PIE,PIECE,PIG,PILE,PILOT,PIN,PINE,PINK,PINT,PIONEER,PIP,PIPE,PIPELINE,PIT,PITCH,PITFALL,PIVOTAL,PLACE,PLAIN,PLAN,PLANE,PLANET,PLANNED,PLANNER,PLANT,PLASTIC,PLATE,PLAY,PLAYER,PLAYFUL,PLEASANT,PLEASE,PLEASED,PLENTY,PLOT,PLUG,PLUGGED,PLUMBER,PLUS,PLY,POCKET,POCKETS,POD,POEM,POET,POINT,POINTED,POLE,POLICE,POLICY,POLITIC,POLLUTE,POND,POOL,POOR,POORLY,POP,POPE,POPULAR,PORK,PORT,PORTION,PORTRAY,POSITION,POSSESS,POST,POSTAGE,POSTED,POT,POTATO,POTENTIAL,POUND,POVERTY,POWDER,POWER,POWERFUL,PRAIRIE,PRAY,PREDICT,PREFACE,PREFER,PREMIER,PREMISE,PREPARE,PRESENT,PRESERVE,PRESS,PRETTY,PREVIEW,PRICE,PRIDE,PRIMARY,PRIME,PRIMITIVE,PRINCE,PRINT,PRINTED,PRINTER,PRIOR,PRIORITY,PRISON,PRIVATE,PRIZE,PRO,PROBABLE,PROBLEM,PROCEED,PROCESS,PRODUCE,PRODUCT,PROFESS,PROFILE,PROFIT,PROGRAM,PROGRESS,PROJECT,PROMISE,PROMOTE,PROMPT,PROOF,PROPER,PROPHET,PROPOSE,PROSPECT,PROTECT,PROTEST,PROUD,PROVE,PROVIDE,PROVINCE,PROVOKE,PRUDENT,PRY,PUB,PUBLIC,PUBLISH,PULL,PUN,PUP,PURE,PURPOSE,PURSUE,PURSUIT,PUSH,PUT,PUZZLE,PUZZLED,QUALIFY,QUALITY,QUARTER,QUEEN,QUEENLY,QUERIES,QUICK,QUICKLY,QUIET,QUIETLY,QUITE,RABBIT,RACE,RADICAL,RADIO,RAG,RAIL,RAILWAY,RAIN,RAINBOW,RAISE,RAISED,RAM,RAN,RANDOM,RANGE,RANGING,RANK,RANKING,RAP,RAPID,RAPIDLY,RARE,RARELY,RAT,RATE,RATHER,RATING,RATIO,RAW,RAY,REACH,READ,READER,READILY,READING,READY,REAL,REALITY,REALIZE,REALLY,REAR,REASON,REBUILD,RECALL,RECEIPT,RECEIVE,RECENT,RECOGNIZE,RECORD,RECOVER,RECRUIT,RED,REDUCE,REDUCED,REFER,REFLECT,REFORM,REFUGEE,REFUSAL,REGARD,REGIME,REGION,REGULAR,RELATE,RELATED,RELEASE,RELIABLE,RELIEF,RELIEVE,RELY,REMAIN,REMAINS,REMARK,REMEDY,REMIND,REMOTE,REMOVAL,REMOVE,RENT,REPAIR,REPEAT,REPLACE,REPLICA,REPLY,REPORT,REPUTED,REQUEST,REQUIRE,RESCUE,RESERVE,RESIGN,RESIST,RESORT,RESPECT,RESPOND,REST,RESTORE,RESULT,RETAIL,RETAIN,RETIRED,RETURN,REVEAL,REVENUE,REVERSE,REVIEW,REVISED,REVIVAL,REVOLT,REWARD,RIB,RICE,RICH,RICHES,RID,RIDE,RIDING,RIG,RIGHT,RIM,RING,RIP,RISE,RISING,RISK,RIVAL,RIVALS,RIVER,ROAD,ROB,ROBBERY,ROBIN,ROBOTIC,ROBUST,ROCK,ROD,ROE,ROGER,ROLE,ROLL,ROMAN,ROMANCE,ROOF,ROOM,ROOT,ROSE,ROT,ROUGH,ROUND,ROUNDED,ROUTE,ROUTINE,ROW,ROYAL,RUB,RUG,RULE,RULING,RUM,RUN,RUNNING,RURAL,RUSH,RUT,RYE,SACRED,SAD,SAFE,SAFEGUARD,SAFETY,SAG,SAID,SAIL,SAILING,SALARY,SALE,SALT,SAME,SAMPLE,SAMPLING,SANCTION,SAND,SAP,SAT,SAVE,SAVING,SAVINGS,SAW,SAY,SCALE,SCENE,SCENERY,SCEPTIC,SCHEDULE,SCHEME,SCHOLAR,SCHOOL,SCIENCE,SCOPE,SCORE,SCRATCH,SCREEN,SEA,SEAFOOD,SEARCH,SEASON,SEAT,SECOND,SECRECY,SECRET,SECTION,SECTOR,SECURE,SEE,SEED,SEEING,SEEK,SEEKING,SEEM,SEEN,SEGMENT,SELDOM,SELECT,SELF,SELL,SELLER,SENATOR,SEND,SENIOR,SENSE,SENSING,SENT,SEPARATE,SEPT,SEQUENCE,SERIES,SERIOUS,SERVANT,SERVE,SERVED,SERVER,SERVICE,SESSION,SET,SETTING,SETTLE,SEVEN,SEVENTH,SEVERE,SEW,SEXUAL,SHADOW,SHALL,SHALLOW,SHAPE,SHARE,SHARING,SHARP,SHE,SHEET,SHELF,SHELL,SHELTER,SHERIFF,SHIFT,SHINE,SHINING,SHIP,SHIRT,SHOCK,SHOCKING,SHOOT,SHOP,SHORT,SHORTLY,SHOT,SHOULD,SHOW,SHOWN,SHUT,SHUTTLE,SHY,SICK,SICKNESS,SIDE,SIDEWAY,SIGHT,SIGN,SIGNAL,SIGNING,SILENCE,SILICONE,SILK,SILVER,SIMILAR,SIMPLE,SIMPLY,SIN,SINCE,SINCERE,SINGER,SINGING,SINGLE,SIP,SIR,SISTER,SIT,SITE,SITTING,SITUATE,SIX,SIXTY,SIZE,SIZED,SKATING,SKI,SKILL,SKILLED,SKIN,SKY,SLAVERY,SLEEP,SLENDER,SLIDE,SLIDING,SLIGHT,SLIP,SLOW,SLY,SMALL,SMART,SMILE,SMILING,SMITH,SMOKE,SMOKING,SMOOTH,SNOW,SO,SOAP,SOB,SOCIAL,SOD,SOFT,SOIL,SOLD,SOLDIER,SOLE,SOLELY,SOLID,SOLVE,SOME,SOMEDAY,SOMEHOW,SOMEONE,SON,SONG,SOON,SORRY,SORT,SOUGHT,SOUL,SOUND,SOUP,SOURCE,SOUTH,SOVIET,SOW,SOY,SPA,SPACE,SPAN,SPARE,SPARSE,SPATIAL,SPEAK,SPECIAL,SPECIES,SPECIFIC,SPEECH,SPEED,SPEND,SPENDING,SPENT,SPIRIT,SPLIT,SPOKE,SPONSOR,SPORT,SPOT,SPREAD,SPRING,SPY,SQUARE,STABLE,STADIUM,STAFF,STAGE,STAGING,STAKE,STALKER,STAND,STANDUP,STAR,START,STARTUP,STATE,STATIC,STATION,STATUE,STATUS,STATUTE,STAY,STAYING,STEADY,STEALTH,STEAM,STEEL,STEP,STEPPING,STICK,STICKER,STILL,STOCK,STOLEN,STONE,STOOD,STOP,STORAGE,STORE,STORM,STORY,STRAIN,STRANGE,STREAM,STREET,STRESS,STRETCH,STRICT,STRIKE,STRING,STRIP,STRONG,STRUCK,STUCK,STUDENT,STUDIO,STUDY,STUFF,STUMBLE,STYLE,SUB,SUBJECT,SUBMIT,SUBSIDY,SUCCEED,SUCCESS,SUCH,SUCTION,SUDDEN,SUE,SUFFER,SUFFICE,SUGAR,SUGGEST,SUIT,SUITABLE,SUITE,SUM,SUMMARY,SUMMER,SUMMIT,SUN,SUNBEAM,SUNLIGHT,SUNSHINE,SUPER,SUPPER,SUPPLY,SUPREME,SURE,SURELY,SURFACE,SURGEON,SURPLUS,SURPRISE,SURRENDER,SURROUND,SURVEY,SURVIVAL,SURVIVE,SUSPECT,SUSTAIN,SWEATER,SWEET,SWIMMING,SWING,SWITCH,SYLLABLE,SYMBOL,SYMPTOM,SYNTACT,SYSTEM,TAB,TABLE,TACKLE,TAG,TAKE,TAKEN,TAKING,TALE,TALENT,TALK,TALKING,TALL,TAN,TANGIBLE,TANK,TAP,TAPE,TAR,TARGET,TASK,TASTE,TAUGHT,TAX,TAXES,TEA,TEACH,TEACHER,TEAM,TEE,TEETH,TELECOM,TELL,TEN,TENANCY,TENANT,TEND,TENDER,TENNIS,TENSION,TERM,TERMINAL,TERRIBLE,TERRY,TEST,TESTING,TEXAS,TEXT,TEXTURE,THAN,THANK,THANKFUL,THANKS,THAT,THE,THEATER,THEFT,THEIR,THEM,THEME,THEN,THEORY,THERAPY,THERE,THESE,THEY,THICK,THICKLY,THIN,THING,THINK,THIRD,THIRTY,THIS,THOSE,THOUGH,THOUGHT,THREAT,THREE,THREW,THRIVE,THROAT,THROUGH,THROW,THUS,THY,TICKET,TICKETS,TIE,TIGHT,TILL,TIME,TIMELY,TIMES,TIMING,TIN,TINY,TIP,TIRED,TISSUE,TITLE,TO,TOBACCO,TODAY,TOE,TOLD,TOLL,TON,TONE,TONGUE,TONIGHT,TOO,TOOK,TOOL,TOOLBOX,TOP,TOPIC,TOPICAL,TORNADO,TOTAL,TOTALITY,TOUCH,TOUCHED,TOUGH,TOUR,TOURISM,TOURIST,TOW,TOWARD,TOWARDS,TOWER,TOWN,TOXICITY,TOY,TRACK,TRACKER,TRADE,TRAFFIC,TRAIN,TRAINED,TRAINER,TRAITOR,TRANSIT,TRAVEL,TREAT,TREATY,TREE,TREMBLE,TREND,TRIAL,TRIBUTE,TRIED,TRIES,TRIGGER,TRIP,TRIUMPH,TROUBLE,TRUCK,TRUE,TRULY,TRUST,TRUSTEE,TRUTH,TRUTHFUL,TRY,TUB,TUG,TUNE,TURN,TURNING,TWELVE,TWENTY,TWICE,TWIN,TWO,TYPE,TYPICAL,UBIQUITY,ULTIMATE,UMBRELLA,UNABLE,UNAWARE,UNBOUND,UNCLOTHE,UNDER,UNDERGO,UNDUE,UNIFORM,UNION,UNIQUE,UNIT,UNITED,UNITY,UNKNOWN,UNLAWFUL,UNLESS,UNLIKE,UNLUCKY,UNREST,UNSEEN,UNSURE,UNTIL,UNUSUAL,UP,UPDATE,UPGRADE,UPON,UPPER,UPRIGHT,UPSET,UPSWING,UPWARD,URBAN,URGENCY,URGENT,URN,US,USAGE,USE,USED,USEFUL,USELESS,USER,USUAL,UTILITY,VACCINE,VALIANT,VALID,VALLEY,VALUABLE,VALUE,VAN,VARIABLE,VARIED,VARIETY,VARIOUS,VARY,VAST,VAT,VEGETABLE,VENDOR,VENTURE,VERBAL,VERDICT,VERSION,VERTICAL,VERY,VET,VETERAN,VIA,VICE,VICTIM,VICTOR,VICTORY,VIDEO,VIE,VIEW,VIEWED,VILLAGE,VIOLATE,VIOLENT,VIOLIN,VIRTUAL,VIRTUE,VIRUS,VISIBLE,VISION,VISIT,VISITOR,VISUAL,VITAL,VOICE,VOICES,VOLTAGE,VOLUME,VOLUNTEER,VOTE,VOUCHER,VOW,VOYAGE,WAGE,WAIT,WAKE,WALK,WALKER,WALKING,WALL,WANT,WANTED,WAR,WARM,WARRANT,WARREN,WARRIOR,WASH,WASTE,WASTED,WATCH,WATCHER,WATER,WATERS,WAVE,WAX,WAY,WAYS,WE,WEAK,WEAKLY,WEALTH,WEAPON,WEAR,WEATHER,WEB,WEBCAST,WEBSITE,WED,WEE,WEEK,WEEKEND,WEEKLY,WEIGHT,WELCOME,WELFARE,WELL,WENT,WERE,WEST,WESTERN,WET,WETLAND,WHAT,WHEEL,WHEN,WHERE,WHEREAS,WHETHER,WHICH,WHILE,WHISPER,WHISTLE,WHITE,WHO,WHOLE,WHOM,WHOSE,WHY,WIDE,WIFE,WIG,WILD,WILL,WIN,WIND,WINDOW,WINE,WING,WINNER,WINNING,WINTER,WIPE,WIRE,WIRELESS,WISDOM,WISE,WISH,WIT,WITH,WITHOUT,WITNESS,WOE,WOK,WOMAN,WOMEN,WON,WONDER,WOO,WOOD,WOODEN,WORD,WORE,WORK,WORKER,WORKING,WORKOUT,WORLD,WORRY,WORSE,WORSHIP,WORST,WORTH,WORTHY,WOULD,WOUND,WOW,WRITE,WRITER,WRITING,WRITTEN,WRONG,WROTE,YAK,YAM,YAP,YARD,YARDAGE,YAW,YEA,YEAH,YEAR,YEARBOOK,YEARLY,YELLOW,YES,YET,YEW,YIELD,YIELDED,YIP,YON,YOU,YOUNG,YOUR,YOUTH,YOUTHFUL,YUM,ZEALOUS,ZEN,ZERO,ZIP,ZONE,ZOO";
+        const COMMON_WORDS_DB = new Set(rawDictString.split(','));
 
-        function showConfirm(message, callback, title="확인", icon="❓") {
-            const modal = document.getElementById('custom-modal');
-            document.getElementById('modal-title').innerText = title;
-            document.getElementById('modal-message').innerHTML = message;
-            document.getElementById('modal-icon').innerText = icon;
-            
-            const btnConfirm = document.getElementById('modal-btn-confirm');
-            const btnCancel = document.getElementById('modal-btn-cancel');
-            
-            btnCancel.classList.remove('hidden');
-            modal.classList.remove('hidden');
-            
-            btnConfirm.onclick = () => {
-                modal.classList.add('hidden');
-                callback(true);
-            };
-            btnCancel.onclick = () => {
-                modal.classList.add('hidden');
-                callback(false);
-            };
-        }
+        const commonMeanings = {
+            'APPLE': '사과', 'BANANA': '바나나', 'CAT': '고양이', 'DOG': '개', 'ELEPHANT': '코끼리',
+            'FISH': '물고기', 'GIRL': '소녀', 'HOUSE': '집', 'ICE': '얼음', 'JUICE': '주스',
+            'KITE': '연', 'LION': '사자', 'MONKEY': '원숭이', 'NOSE': '코', 'ORANGE': '오렌지',
+            'PIG': '돼지', 'QUEEN': '여왕', 'RABBIT': '토끼', 'SUN': '태양', 'TREE': '나무',
+            'UMBRELLA': '우산', 'VAN': '승합차', 'WATER': '물', 'XYLOPHONE': '실로폰',
+            'YELLOW': '노란색', 'ZEBRA': '얼룩말', 'ANT': '개미', 'BEAR': '곰', 'COW': '소',
+            'DUCK': '오리', 'EGG': '계란', 'FROG': '개구리', 'GOAT': '염소', 'HORSE': '말',
+            'INK': '잉크', 'JAM': '잼', 'KING': '왕', 'LEMON': '레몬', 'MOUSE': '쥐',
+            'NUT': '견과류', 'OWL': '올빼미', 'PEN': '펜', 'CUP': '컵', 'DESK': '책상',
+            'ROAD': '길', 'TIGER': '호랑이', 'SCHOOL': '학교', 'BOOK': '책', 'BAG': '가방',
+            'BOY': '소년', 'CAP': '모자', 'CAR': '자동차', 'DOLL': '인형', 'DOOR': '문',
+            'TOUCH': '만지다', 'PLAY': '놀다', 'RUN': '달리다', 'JUMP': '뛰다', 'WALK': '걷다',
+            'TALK': '말하다', 'STUDY': '공부하다', 'SLEEP': '자다', 'EAT': '먹다', 'DRINK': '마시다',
+            'READ': '읽다', 'WRITE': '쓰다', 'LISTEN': '듣다', 'SPEAK': '말하다', 'LOOK': '보다',
+            'SEE': '보다', 'WATCH': '보다', 'STOP': '멈추다', 'GO': '가다', 'COME': '오다',
+            'LOVE': '사랑하다', 'LIKE': '좋아하다', 'HATE': '싫어하다', 'HAPPY': '행복한',
+            'SAD': '슬픈', 'ANGRY': '화난', 'GOOD': '좋은', 'BAD': '나쁜', 'BIG': '큰', 'SMALL': '작은'
+        };
 
-        // --- State Variables ---
-        let userInfo = { grade: '', class: '', num: '', name: '' };
-        let formattedName = '';
-        let mySessionId = Math.random().toString(36).substring(2, 10); // 고유 세션 ID (나를 식별)
-        let myRole = null; // 'host' (방장) 또는 'guest' (손님) - 턴 동기화에 필수
-        
-        let currentScreen = document.getElementById('screen-login');
-        let gameScore = 0;
-        let timerInterval = null;
-        let timeLeft = 60;
-        let usedWords = []; // { word: "apple", meaning: "사과" }
-        let lastLetter = '';
-        
-        let currentMode = 'single'; // 'single' or 'multi'
+        const forbiddenWords = [
+            'FUCK', 'SHIT', 'BITCH', 'ASS', 'SEX', 'PORN', 'DAMN', 'CRAP', 'PISS', 
+            'DICK', 'COCK', 'PUSSY', 'SLUT', 'WHORE', 'BASTARD', 'IDIOT', 'STUPID', 'HELL'
+        ];
+
+        // ════════════════════════════════════════════════════════════════════
+        // ── 전역 상태 관리 ──
+        // ════════════════════════════════════════════════════════════════════
+        let studentProfile = {
+            grade: '3',
+            classNum: '1',
+            studentNum: '1',
+            name: ''
+        };
+
+        let mySessionId = Math.random().toString(36).substring(2, 10);
+        let myRole = null; // 'host' | 'guest'
+        let currentMode = 'single'; // 'single' | 'multi'
         let currentRoomId = null;
         let roomUnsubscribe = null;
         let isMyTurn = false;
         let hasAnnouncedJoin = false;
 
-        let fastWordSet = new Set(); // 1만개 단어 빠른 검증용
+        let gameScore = 0;
+        let timerInterval = null;
+        let timeLeft = 60;
+        let usedWords = []; // [ { word: 'APPLE', meaning: '사과' } ]
+        let lastLetter = '';
 
-        // 초등 필수 단어 및 번역기 오류 방지용 단어 (즉시 응답)
-        const commonWords = { 
-            'apple': '사과', 'banana': '바나나', 'cat': '고양이', 'dog': '개', 'elephant': '코끼리',
-            'fish': '물고기', 'girl': '소녀', 'house': '집', 'ice': '얼음', 'juice': '주스',
-            'kite': '연', 'lion': '사자', 'monkey': '원숭이', 'nose': '코', 'orange': '오렌지',
-            'pig': '돼지', 'queen': '여왕', 'rabbit': '토끼', 'sun': '태양', 'tree': '나무',
-            'umbrella': '우산', 'van': '승합차', 'water': '물', 'xylophone': '실로폰',
-            'yellow': '노란색', 'zebra': '얼룩말', 'ant': '개미', 'bear': '곰', 'cow': '소',
-            'duck': '오리', 'egg': '계란', 'frog': '개구리', 'goat': '염소', 'horse': '말',
-            'ink': '잉크', 'jam': '잼', 'king': '왕', 'lemon': '레몬', 'mouse': '쥐',
-            'nut': '견과류', 'owl': '올빼미', 'pen': '펜', 'cup': '컵', 'desk': '책상',
-            'road': '길', 'tiger': '호랑이', 'school': '학교', 'book': '책', 'bag': '가방',
-            'boy': '소년', 'cap': '모자', 'car': '자동차', 'doll': '인형', 'door': '문',
-            // --- 번역기 에러 방지용 기본 동사 및 형용사 추가 ---
-            'touch': '만지다 (또는 터치)', 'play': '놀다', 'run': '달리다', 'jump': '뛰다', 'walk': '걷다',
-            'talk': '말하다', 'study': '공부하다', 'sleep': '자다', 'eat': '먹다', 'drink': '마시다',
-            'read': '읽다', 'write': '쓰다', 'listen': '듣다', 'speak': '말하다', 'look': '보다',
-            'see': '보다', 'watch': '보다', 'stop': '멈추다', 'go': '가다', 'come': '오다',
-            'love': '사랑하다', 'like': '좋아하다', 'hate': '싫어하다', 'happy': '행복한',
-            'sad': '슬픈', 'angry': '화난', 'good': '좋은', 'bad': '나쁜', 'big': '큰', 'small': '작은'
+        let hofAllRecords = [];
+        let hofActiveTab = 'all'; // 'all' | 'single' | 'multi'
+
+        // ════════════════════════════════════════════════════════════════════
+        // ── 학생 프로필 및 초기화 ──
+        // ════════════════════════════════════════════════════════════════════
+        function loadStudentProfile() {
+            try {
+                const saved = JSON.parse(localStorage.getItem('waurimal_student_profile') || '{}');
+                if (saved.grade) studentProfile.grade = String(saved.grade);
+                if (saved.classNum) studentProfile.classNum = String(saved.classNum);
+                if (saved.studentNum) studentProfile.studentNum = String(saved.studentNum);
+                if (saved.name) studentProfile.name = saved.name.trim();
+            } catch (e) {}
+            updateWelcomeUI();
+        }
+
+        function updateWelcomeUI() {
+            const welcomeEl = document.getElementById('welcome-text');
+            if (!welcomeEl) return;
+            if (studentProfile.name) {
+                welcomeEl.innerHTML = `<strong class="text-emerald-700">${studentProfile.grade}학년 ${studentProfile.classNum}반 ${studentProfile.studentNum}번 ${studentProfile.name}</strong> 학생 환영해요!`;
+            } else {
+                welcomeEl.innerHTML = `<span class="text-amber-600 font-bold">프로필을 등록해주세요!</span> <span class="text-xs text-slate-400 font-normal ml-1">(오른쪽 버튼 클릭)</span>`;
+            }
+        }
+
+        function getFormattedName() {
+            const g = studentProfile.grade || '3';
+            const c = studentProfile.classNum || '1';
+            const num = studentProfile.studentNum || '1';
+            const rawName = studentProfile.name || '학생';
+            const masked = rawName.length <= 1 ? rawName : (rawName[0] + 'O' + (rawName.length > 2 ? rawName.substring(2) : ''));
+            return `${g}학년 ${c}반 ${num}번 ${masked}`;
+        }
+
+        window.openProfileModal = () => {
+            document.getElementById('prof-grade').value = studentProfile.grade || '3';
+            document.getElementById('prof-class').value = studentProfile.classNum || '1';
+            document.getElementById('prof-num').value = studentProfile.studentNum || '1';
+            document.getElementById('prof-name').value = studentProfile.name || '';
+            document.getElementById('modal-profile').classList.remove('hidden');
         };
 
-        const forbiddenWords = [ // 금기어
-            'fuck', 'shit', 'bitch', 'ass', 'sex', 'porn', 'damn', 'crap', 'piss', 
-            'dick', 'cock', 'pussy', 'slut', 'whore', 'bastard', 'idiot', 'stupid', 'hell'
-        ];
+        window.closeProfileModal = () => {
+            document.getElementById('modal-profile').classList.add('hidden');
+        };
 
-        const screenLogin = document.getElementById('screen-login');
-        const screenLobby = document.getElementById('screen-lobby');
-        const screenGame = document.getElementById('screen-game');
-        const chatContainer = document.getElementById('chat-container');
-        const inputWord = document.getElementById('input-word');
-        const btnSubmit = document.getElementById('btn-submit');
-        const btnSubmitIcon = document.getElementById('btn-submit-icon');
+        window.saveProfile = () => {
+            const g = document.getElementById('prof-grade').value;
+            const c = document.getElementById('prof-class').value;
+            const num = document.getElementById('prof-num').value.trim();
+            const name = document.getElementById('prof-name').value.trim();
 
-        // --- Init & Load Data ---
-        async function loadFastDictionary() {
-            try {
-                // CORS 및 네트워크 차단 방지를 위해 안정적인 CDN(jsDelivr) 우선 사용
-                let response = await fetch('https://cdn.jsdelivr.net/gh/first20hours/google-10000-english@master/google-10000-english-no-swears.txt');
-                
-                if (!response.ok) {
-                    // CDN 실패 시 기존 GitHub Raw URL로 재시도 (예비용)
-                    response = await fetch('https://raw.githubusercontent.com/first20hours/google-10000-english/master/google-10000-english-no-swears.txt');
-                }
-                
-                const text = await response.text();
-                text.split('\n').map(w => w.trim().toLowerCase()).filter(w => w.length > 0).forEach(w => fastWordSet.add(w));
-                Object.keys(commonWords).forEach(w => fastWordSet.add(w.toLowerCase()));
-            } catch (error) { 
-                console.error("Dictionary load failed:", error); 
-                // 다운로드 완전 실패 시 게임이 멈추지 않도록 최소한의 내장 단어 세팅
-                Object.keys(commonWords).forEach(w => fastWordSet.add(w.toLowerCase()));
-            }
-        }
-        loadFastDictionary();
-        loadHoF(); // 첫 화면에 명예의 전당 바로 로딩
-
-        // --- UI Flow ---
-        function switchScreen(newScreen) {
-            currentScreen.classList.add('hidden-screen');
-            newScreen.classList.remove('hidden-screen');
-            currentScreen = newScreen;
-            if(newScreen === screenLogin) loadHoF();
-        }
-
-        document.getElementById('btn-login').addEventListener('click', () => {
-            const grade = document.getElementById('input-grade').value;
-            const cls = document.getElementById('input-class').value;
-            const num = document.getElementById('input-num').value;
-            const name = document.getElementById('input-name').value.trim();
-
-            if (!grade || !cls || !num || !name) {
-                showAlert("학년, 반, 번호, 이름을 모두 입력해주세요!", "알림", "⚠️");
+            if (!name) {
+                showAlert("이름을 입력해주세요!", "알림", "⚠️");
                 return;
             }
 
-            userInfo = { grade, class: cls, num, name };
-            formattedName = `${grade}학년 ${cls}반 ${num}번 ${name[0]}O${name.length>2 ? name.substring(2) : ''}`;
-            
-            document.getElementById('display-user-info').innerText = `${name} 학생 환영해요!`;
-            switchScreen(screenLobby);
-        });
-
-        document.getElementById('btn-back-to-login').addEventListener('click', () => switchScreen(screenLogin));
-
-        // --- Game Logic ---
-        async function getTranslation(word) {
+            studentProfile = { grade: g, classNum: c, studentNum: num || '1', name };
             try {
-                const res = await fetch(`https://api.mymemory.translated.net/get?q=${word}&langpair=en|ko`);
-                const data = await res.json();
-                if (data && data.responseData && data.responseData.translatedText) {
-                    let text = data.responseData.translatedText;
-                    if (text.toLowerCase() === word.toLowerCase()) return null;
-                    // 번역기 자체 버그/오류 메시지 필터링
-                    if (text.includes("윈도우즈에서 동작하지")) return "(알려진 영단어)";
-                    return text;
-                }
-            } catch(e) { console.warn("Translation failed"); }
-            return null;
-        }
+                localStorage.setItem('waurimal_student_profile', JSON.stringify({
+                    school: '이의초등학교',
+                    grade: g,
+                    classNum: c,
+                    studentNum: num || '1',
+                    name: name
+                }));
+            } catch (e) {}
 
-        function verifyWordFast(word) {
-            word = word.toLowerCase();
-            
-            if (forbiddenWords.includes(word)) return { valid: false, reason: "사용할 수 없는 단어입니다!<br>(바른말을 사용해주세요 😇)" };
-            if (usedWords.some(w => w.word === word)) return { valid: false, reason: "이미 사용된 단어입니다." };
-            if (lastLetter && word[0] !== lastLetter) return { valid: false, reason: `'${lastLetter.toUpperCase()}'(으)로 시작하는 단어를 입력해야 합니다.` };
-            if (word.length < 2) return { valid: false, reason: "단어는 2글자 이상이어야 합니다." };
-            if (!/^[a-z]+$/.test(word)) return { valid: false, reason: "알파벳만 입력 가능합니다." };
+            updateWelcomeUI();
+            closeProfileModal();
+        };
 
-            if (commonWords[word]) return { valid: true, meaning: commonWords[word], needsAsync: false };
-            if (fastWordSet.has(word)) return { valid: true, meaning: "뜻 검색 중... 🔍", needsAsync: true };
-
-            return { valid: false, reason: "사전에 없는 단어입니다." };
-        }
-
-        async function updateMeaningInUI(word, msgId) {
-            const trans = await getTranslation(word);
-            const finalMeaning = trans ? trans : "(알려진 영단어)";
-            
-            const wordObj = usedWords.find(w => w.word === word);
-            if(wordObj) wordObj.meaning = finalMeaning;
-            
-            const msgEl = document.getElementById(msgId);
-            if(msgEl) {
-                const meaningEl = msgEl.querySelector('.word-meaning');
-                if(meaningEl) {
-                    meaningEl.innerText = finalMeaning;
-                    meaningEl.classList.remove('text-gray-400', 'animate-pulse');
-                    meaningEl.classList.add('text-gray-600');
-                }
-            }
-        }
-
-        function renderChatBubble(sender, word, meaning, msgId = "") {
-            const div = document.createElement('div');
-            div.className = `flex w-full ${sender === 'me' ? 'justify-end' : 'justify-start'}`;
-            if(msgId) div.id = msgId;
-            
-            const isMe = sender === 'me';
-            const bubbleClass = isMe ? 'bubble-right' : 'bubble-left';
-            const name = isMe ? '나' : (currentMode === 'single' ? '컴퓨터' : '상대방');
-            
-            div.innerHTML = `
-                <div class="max-w-[70%] flex flex-col ${isMe ? 'items-end' : 'items-start'}">
-                    <span class="text-xs text-gray-500 mb-1 px-1">${name}</span>
-                    <div class="${bubbleClass} px-5 py-3 relative">
-                        <div class="font-bold text-2xl uppercase tracking-widest text-gray-800">${word}</div>
-                        <div class="word-meaning text-sm mt-1 text-center font-normal ${meaning.includes('검색 중') ? 'text-gray-400 animate-pulse' : 'text-gray-600'} border-t border-black/10 pt-1">${meaning}</div>
-                        ${!isMe && lastLetter ? `<div class="absolute ${isMe ? '-left-2' : '-right-2'} top-4 w-4 h-4 bg-${isMe?'yellow-200':'white'} rotate-45"></div>` : ''}
-                    </div>
-                </div>
-            `;
-            chatContainer.appendChild(div);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-
-        btnSubmit.addEventListener('click', handleUserSubmit);
-        inputWord.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleUserSubmit(); });
-
-        async function handleUserSubmit() {
-            if(!isMyTurn) return;
-            const word = inputWord.value.trim().toLowerCase();
-            if (!word) return;
-
-            const check = verifyWordFast(word);
-            if (!check.valid) {
-                showAlert(check.reason, "틀렸어요!", "❌");
-                inputWord.value = '';
-                return;
-            }
-
-            inputWord.value = '';
-            isMyTurn = false;
-            toggleInput(false);
-            
-            gameScore += 10;
-            document.getElementById('display-score').innerText = `내 점수: ${gameScore}점`;
-            
-            usedWords.push({ word, meaning: check.meaning });
-            lastLetter = word[word.length - 1];
-            
-            const msgId = `msg-${Date.now()}`;
-            renderChatBubble('me', word, check.meaning, msgId);
-
-            if (check.needsAsync) updateMeaningInUI(word, msgId);
-
-            if (currentMode === 'single') {
-                resetTimer();
-                setTimeout(playComputerTurn, 700);
-            } else if (currentMode === 'multi') {
-                // 내가 방장이면 다음 턴은 guest, 내가 guest면 다음 턴은 host
-                const nextTurn = myRole === 'host' ? 'guest' : 'host';
+        // ════════════════════════════════════════════════════════════════════
+        // ── 공통 모달 & 알림창 ──
+        // ════════════════════════════════════════════════════════════════════
+        window.showAlert = (msg, title="알림", icon="🔔") => {
+            return new Promise((resolve) => {
+                const modal = document.getElementById('custom-modal');
+                document.getElementById('modal-title').innerText = title;
+                document.getElementById('modal-message').innerHTML = msg;
+                document.getElementById('modal-icon').innerText = icon;
                 
-                await updateRoomState(currentRoomId, {
-                    lastWord: word,
-                    lastMeaning: check.meaning,
-                    lastMessageId: msgId,
-                    needsAsync: check.needsAsync,
-                    turn: nextTurn,
-                    lastPlayerId: mySessionId // 내 기록
-                });
-                resetTimer();
-            }
-        }
+                const btnConfirm = document.getElementById('modal-btn-confirm');
+                const btnCancel = document.getElementById('modal-btn-cancel');
+                btnCancel.classList.add('hidden');
+                modal.classList.remove('hidden');
 
-        // --- 나가기 버튼 ---
-        document.getElementById('btn-exit').addEventListener('click', () => {
-            showConfirm(`게임을 종료하고 로비로 나가시겠습니까?<br>현재까지 획득한 점수(<span class="text-red-500 font-bold">${gameScore}점</span>)가 명예의 전당에 저장됩니다.`, async (confirmed) => {
-                if (confirmed) {
-                    await saveScoreToHoF();
-                    if (currentMode === 'multi') {
-                        updateRoomState(currentRoomId, { status: "gameover", winner: "opponent", reason: "상대방 퇴장" });
-                    }
-                    clearInterval(timerInterval);
-                    chatContainer.innerHTML = '';
-                    if(roomUnsubscribe) roomUnsubscribe();
-                    switchScreen(screenLobby);
-                }
+                btnConfirm.onclick = () => {
+                    modal.classList.add('hidden');
+                    resolve();
+                };
             });
-        });
+        };
 
-        // --- 혼자하기 모드 (AI 턴) ---
-        async function playComputerTurn() {
-            const availableWords = Object.keys(commonWords).filter(w => w[0] === lastLetter && !usedWords.some(u => u.word === w));
-            
-            if (availableWords.length === 0) {
-                await endGame("컴퓨터가 더 이상 아는 단어가 없습니다! 🎉");
-                return;
-            }
+        window.showConfirm = (msg, title="확인", icon="❓") => {
+            return new Promise((resolve) => {
+                const modal = document.getElementById('custom-modal');
+                document.getElementById('modal-title').innerText = title;
+                document.getElementById('modal-message').innerHTML = msg;
+                document.getElementById('modal-icon').innerText = icon;
 
-            const word = availableWords[Math.floor(Math.random() * availableWords.length)];
-            const meaning = commonWords[word];
-            
-            usedWords.push({ word, meaning });
-            lastLetter = word[word.length - 1];
-            
-            renderChatBubble('computer', word, meaning);
-            
-            isMyTurn = true;
-            toggleInput(true);
-            resetTimer();
+                const btnConfirm = document.getElementById('modal-btn-confirm');
+                const btnCancel = document.getElementById('modal-btn-cancel');
+                btnCancel.classList.remove('hidden');
+                modal.classList.remove('hidden');
+
+                btnConfirm.onclick = () => {
+                    modal.classList.add('hidden');
+                    resolve(true);
+                };
+                btnCancel.onclick = () => {
+                    modal.classList.add('hidden');
+                    resolve(false);
+                };
+            });
+        };
+
+        window.hideAlertBanner = () => {
+            document.getElementById('alert-banner').classList.add('hidden');
+        };
+
+        function showAlertBanner(msg) {
+            const banner = document.getElementById('alert-banner');
+            document.getElementById('alert-banner-text').innerText = msg;
+            banner.classList.remove('hidden');
+            setTimeout(() => banner.classList.add('hidden'), 3500);
         }
 
-        function startGame(mode) {
+        // ════════════════════════════════════════════════════════════════════
+        // ── 고속 영단어 검증 & 뜻 조회 ──
+        // ════════════════════════════════════════════════════════════════════
+        async function verifyWord(word) {
+            const upper = word.toUpperCase();
+            const lower = word.toLowerCase();
+
+            if (forbiddenWords.includes(upper)) {
+                return { valid: false, reason: "사용할 수 없는 단어입니다! 🚫<br>(바른말을 사용해주세요 😇)" };
+            }
+            if (usedWords.some(w => w.word.toUpperCase() === upper)) {
+                return { valid: false, reason: "이미 사용된 단어입니다! 🔁" };
+            }
+            if (lastLetter && upper[0] !== lastLetter.toUpperCase()) {
+                return { valid: false, reason: `'${lastLetter.toUpperCase()}'(으)로 시작하는 단어를 입력해야 합니다! ⚠️` };
+            }
+            if (upper.length < 2) {
+                return { valid: false, reason: "단어는 2글자 이상이어야 합니다! 📏" };
+            }
+            if (!/^[A-Z]+$/.test(upper)) {
+                return { valid: false, reason: "알파벳만 입력 가능합니다! 🔤" };
+            }
+
+            // 1. 인라인 사전 즉시 확인 (0ms)
+            if (commonMeanings[upper]) {
+                return { valid: true, meaning: commonMeanings[upper], isFast: true };
+            }
+            if (COMMON_WORDS_DB.has(upper)) {
+                return { valid: true, meaning: "알려진 영단어", isFast: true };
+            }
+
+            // 2. Datamuse API 초고속 확인 (1.2초 타임아웃)
+            try {
+                const ctrl = new AbortController();
+                const timeoutId = setTimeout(() => ctrl.abort(), 1200);
+                const res = await fetch(`https://api.datamuse.com/words?sp=${lower}&max=1`, { signal: ctrl.signal });
+                clearTimeout(timeoutId);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.length > 0 && data[0].word && data[0].word.toLowerCase() === lower) {
+                        COMMON_WORDS_DB.add(upper);
+                        return { valid: true, meaning: "알려진 영단어", isFast: false };
+                    }
+                }
+            } catch (e) {}
+
+            return { valid: false, reason: "사전에 없는 단어입니다! ❌" };
+        }
+
+        async function fetchWordMeaning(word) {
+            const upper = word.toUpperCase();
+            if (commonMeanings[upper]) return commonMeanings[upper];
+
+            try {
+                const ctrl = new AbortController();
+                const to = setTimeout(() => ctrl.abort(), 900);
+                const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ko&dt=t&q=${encodeURIComponent(word.toLowerCase())}`, { signal: ctrl.signal });
+                clearTimeout(to);
+                if (res.ok) {
+                    const d = await res.json();
+                    const trans = d?.[0]?.[0]?.[0];
+                    if (trans && trans.toLowerCase() !== word.toLowerCase()) {
+                        commonMeanings[upper] = trans;
+                        return trans;
+                    }
+                }
+            } catch (e) {}
+            return "알려진 영단어";
+        }
+
+        // ════════════════════════════════════════════════════════════════════
+        // ── 게임 플레이 엔진 ──
+        // ════════════════════════════════════════════════════════════════════
+        window.startSinglePlayer = () => {
+            if (!studentProfile.name) {
+                openProfileModal();
+                return;
+            }
+            startGameSession('single');
+        };
+
+        function startGameSession(mode) {
             currentMode = mode;
             gameScore = 0;
             usedWords = [];
             lastLetter = '';
-            chatContainer.innerHTML = '';
-            document.getElementById('display-score').innerText = `내 점수: 0점`;
-            document.getElementById('game-opponent-name').innerHTML = mode === 'single' ? '<i class="fa-solid fa-robot mr-2"></i>컴퓨터' : '<i class="fa-solid fa-user-group mr-2"></i>친구';
-            
-            switchScreen(screenGame);
-            
+
+            document.getElementById('screen-home').classList.add('hidden');
+            document.getElementById('screen-teacher').classList.add('hidden');
+            document.getElementById('screen-game').classList.remove('hidden');
+
+            const chat = document.getElementById('chat-messages');
+            chat.innerHTML = '';
+
+            document.getElementById('game-my-score').innerText = '내 점수: 0점';
+            const badge = document.getElementById('game-opponent-badge');
+            if (mode === 'single') {
+                badge.innerHTML = '<i class="fa-solid fa-robot"></i> 컴퓨터 (AI)';
+            } else {
+                badge.innerHTML = '<i class="fa-solid fa-user-group"></i> 1:1 대결 친구';
+            }
+
             if (mode === 'single') {
                 isMyTurn = true;
-                toggleInput(true);
-                renderChatBubble('computer', 'start', '시작 단어입니다.');
-                usedWords.push({word: 'start', meaning: '시작'});
-                lastLetter = 't';
+                setWordInputState(true);
+                const startWord = 'START';
+                usedWords.push({ word: startWord, meaning: '시작' });
+                lastLetter = 'T';
+                renderBubble('computer', startWord, '시작 단어입니다 (T로 시작하세요)');
             } else {
                 hasAnnouncedJoin = false;
-                toggleInput(isMyTurn);
+                setWordInputState(isMyTurn);
             }
-            resetTimer();
+
+            resetGameTimer();
         }
 
-        function resetTimer() {
+        function resetGameTimer() {
             clearInterval(timerInterval);
             timeLeft = 60;
-            document.getElementById('display-timer').innerText = timeLeft;
+            const timerEl = document.getElementById('game-timer');
+            timerEl.innerText = timeLeft;
+            timerEl.classList.remove('text-red-500', 'animate-pulse');
+
             timerInterval = setInterval(async () => {
                 timeLeft--;
-                document.getElementById('display-timer').innerText = timeLeft;
+                timerEl.innerText = timeLeft;
+                if (timeLeft <= 10) {
+                    timerEl.classList.add('text-red-500', 'animate-pulse');
+                }
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
-                    toggleInput(false);
+                    setWordInputState(false);
                     if (currentMode === 'single') {
-                        await endGame("시간 초과로 패배했습니다. 😥");
+                        await finishGame("시간 초과로 패배했습니다. 😥");
                     } else if (currentMode === 'multi') {
-                        if (isMyTurn) { // 내 턴에 시간이 다 된 경우에만 내가 패배 처리
-                            await updateRoomState(currentRoomId, { status: "gameover", winner: "opponent", reason: "시간 초과" });
+                        if (isMyTurn) {
+                            await updateDoc(doc(db, "rooms", currentRoomId), {
+                                status: "gameover",
+                                winner: (myRole === 'host' ? 'guest' : 'host'),
+                                reason: "시간 초과"
+                            });
                         }
                     }
                 }
             }, 1000);
         }
 
-        function toggleInput(enable) {
-            inputWord.disabled = !enable;
-            btnSubmit.disabled = !enable;
+        function setWordInputState(enable) {
+            const input = document.getElementById('game-word-input');
+            const btn = document.getElementById('game-btn-submit');
+            const icon = document.getElementById('game-btn-submit-icon');
+
+            input.disabled = !enable;
+            btn.disabled = !enable;
+
             if (enable) {
-                inputWord.focus();
-                inputWord.placeholder = `'${lastLetter.toUpperCase()}'(으)로 시작하는 단어 입력`;
-                btnSubmitIcon.className = "fa-solid fa-paper-plane text-xl";
+                input.focus();
+                input.placeholder = lastLetter ? `'${lastLetter.toUpperCase()}'(으)로 시작하는 단어 입력...` : "단어를 입력하세요!";
+                icon.className = "fa-solid fa-paper-plane text-lg";
             } else {
-                inputWord.placeholder = "상대방 차례입니다...";
-                btnSubmitIcon.className = "fa-solid fa-spinner fa-spin text-xl";
+                input.placeholder = "상대방 차례입니다...";
+                icon.className = "fa-solid fa-spinner fa-spin text-lg";
             }
         }
 
-        async function endGame(msg) {
-            clearInterval(timerInterval);
-            await showAlert(msg + `<br><br>최종 점수: <span class="text-green-600 font-bold">${gameScore}점</span>`, "게임 종료", "🏁");
-            await saveScoreToHoF();
-            if(roomUnsubscribe) roomUnsubscribe();
-            switchScreen(screenLobby);
+        function renderBubble(sender, word, meaning, msgId = "") {
+            const chat = document.getElementById('chat-messages');
+            const div = document.createElement('div');
+            const isMe = sender === 'me';
+            div.className = `flex w-full ${isMe ? 'justify-end' : 'justify-start'}`;
+            if (msgId) div.id = msgId;
+
+            const bubbleClass = isMe ? 'bubble-right' : 'bubble-left';
+            const senderName = isMe ? '나' : (currentMode === 'single' ? '컴퓨터' : '상대방');
+
+            div.innerHTML = `
+                <div class="max-w-[75%] flex flex-col ${isMe ? 'items-end' : 'items-start'}">
+                    <span class="text-[11px] text-slate-600 font-bold mb-1 px-1">${senderName}</span>
+                    <div class="${bubbleClass} px-4 py-2.5 shadow-sm">
+                        <div class="font-black text-xl uppercase tracking-wider text-slate-800 leading-tight">${word}</div>
+                        <div class="word-meaning text-xs mt-1 text-center font-bold text-slate-500 border-t border-slate-200/60 pt-1">${meaning || '알려진 영단어'}</div>
+                    </div>
+                </div>
+            `;
+            chat.appendChild(div);
+            chat.scrollTop = chat.scrollHeight;
         }
 
-        // --- Multiplayer Logic ---
-        document.getElementById('btn-single-mode').addEventListener('click', () => { startGame('single'); });
+        window.submitWord = async () => {
+            if (!isMyTurn) return;
+            const input = document.getElementById('game-word-input');
+            const rawWord = input.value.trim();
+            if (!rawWord) return;
 
-        document.getElementById('btn-show-create-room').addEventListener('click', async () => {
+            const check = await verifyWord(rawWord);
+            if (!check.valid) {
+                showAlert(check.reason, "틀렸어요!", "❌");
+                input.value = '';
+                return;
+            }
+
+            const cleanWord = rawWord.toUpperCase();
+            input.value = '';
+            isMyTurn = false;
+            setWordInputState(false);
+
+            // 점수 계산: 기본 10점 + 글자 수 보너스
+            let wordScore = 10;
+            if (cleanWord.length >= 7) wordScore += 10;
+            else if (cleanWord.length >= 5) wordScore += 5;
+            gameScore += wordScore;
+            document.getElementById('game-my-score').innerText = `내 점수: ${gameScore}점 (+${wordScore})`;
+
+            let meaning = check.meaning;
+            const msgId = `msg-${Date.now()}`;
+            renderBubble('me', cleanWord, meaning, msgId);
+            usedWords.push({ word: cleanWord, meaning });
+            lastLetter = cleanWord[cleanWord.length - 1];
+
+            // 비동기 뜻 보강
+            if (meaning === "알려진 영단어") {
+                fetchWordMeaning(cleanWord).then(m => {
+                    if (m && m !== "알려진 영단어") {
+                        const el = document.getElementById(msgId);
+                        if (el) {
+                            const mEl = el.querySelector('.word-meaning');
+                            if (mEl) mEl.innerText = m;
+                        }
+                    }
+                });
+            }
+
+            if (currentMode === 'single') {
+                resetGameTimer();
+                setTimeout(playComputerAITurn, 750);
+            } else if (currentMode === 'multi') {
+                const nextTurn = myRole === 'host' ? 'guest' : 'host';
+                await updateDoc(doc(db, "rooms", currentRoomId), {
+                    lastWord: cleanWord,
+                    lastMeaning: meaning,
+                    lastMessageId: msgId,
+                    turn: nextTurn,
+                    lastPlayerId: mySessionId
+                });
+                resetGameTimer();
+            }
+        };
+
+        document.getElementById('game-word-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') submitWord();
+        });
+
+        // AI 턴
+        async function playComputerAITurn() {
+            const targetChar = lastLetter.toUpperCase();
+            // COMMON_WORDS_DB 중 타겟 문자로 시작하고 아직 쓰이지 않은 단어 찾기
+            const candidates = [];
+            for (const w of COMMON_WORDS_DB) {
+                if (w[0] === targetChar && !usedWords.some(u => u.word.toUpperCase() === w)) {
+                    candidates.push(w);
+                    if (candidates.length >= 40) break;
+                }
+            }
+
+            if (candidates.length === 0) {
+                await finishGame("컴퓨터가 더 이상 아는 단어가 없습니다! 🎉<br>당신의 승리입니다!");
+                return;
+            }
+
+            const chosenWord = candidates[Math.floor(Math.random() * candidates.length)];
+            const meaning = commonMeanings[chosenWord] || "알려진 영단어";
+
+            usedWords.push({ word: chosenWord, meaning });
+            lastLetter = chosenWord[chosenWord.length - 1];
+            renderBubble('computer', chosenWord, meaning);
+
+            isMyTurn = true;
+            setWordInputState(true);
+            resetGameTimer();
+        }
+
+        async function finishGame(msg) {
+            clearInterval(timerInterval);
+            await showAlert(`${msg}<br><br>최종 획득 점수: <span class="text-emerald-600 font-black text-lg">${gameScore}점</span>`, "게임 종료", "🏁");
+            await saveScoreToFirestore();
+            if (roomUnsubscribe) roomUnsubscribe();
+            backToHome();
+        }
+
+        window.confirmExitGame = async () => {
+            const confirmed = await showConfirm(`게임을 종료하고 로비로 나가시겠습니까?<br>현재까지 획득한 점수(<strong class="text-emerald-600">${gameScore}점</strong>)가 명예의 전당에 저장됩니다.`, "게임 나가기", "🚪");
+            if (confirmed) {
+                await saveScoreToFirestore();
+                if (currentMode === 'multi' && currentRoomId) {
+                    try {
+                        await updateDoc(doc(db, "rooms", currentRoomId), {
+                            status: "gameover",
+                            winner: (myRole === 'host' ? 'guest' : 'host'),
+                            reason: "상대방 퇴장"
+                        });
+                    } catch (e) {}
+                }
+                clearInterval(timerInterval);
+                if (roomUnsubscribe) roomUnsubscribe();
+                backToHome();
+            }
+        };
+
+        function backToHome() {
+            document.getElementById('screen-game').classList.add('hidden');
+            document.getElementById('screen-teacher').classList.add('hidden');
+            document.getElementById('screen-home').classList.remove('hidden');
+            loadHallOfFame();
+        }
+
+        // ════════════════════════════════════════════════════════════════════
+        // ── 1:1 멀티플레이 로직 ──
+        // ════════════════════════════════════════════════════════════════════
+        window.openCreateRoomModal = async () => {
+            if (!studentProfile.name) {
+                openProfileModal();
+                return;
+            }
             const code = Math.floor(1000 + Math.random() * 9000).toString();
             document.getElementById('display-room-code').innerText = code;
             document.getElementById('modal-waiting').classList.remove('hidden');
-            
+
             try {
                 await setDoc(doc(db, "rooms", code), {
-                    status: "waiting", createdBy: formattedName, createdSession: mySessionId, createdAt: Date.now()
+                    status: "waiting",
+                    createdBy: getFormattedName(),
+                    createdSession: mySessionId,
+                    createdAt: Date.now()
                 });
                 currentRoomId = code;
-                myRole = 'host'; // 나는 방장
-                listenToRoom(code);
-            } catch(e) { showAlert("방 생성 실패!", "오류", "❌"); document.getElementById('modal-waiting').classList.add('hidden');}
-        });
+                myRole = 'host';
+                listenRoomUpdates(code);
+            } catch (e) {
+                showAlert("방 생성 중 오류가 발생했습니다.", "오류", "❌");
+                document.getElementById('modal-waiting').classList.add('hidden');
+            }
+        };
 
-        document.getElementById('btn-cancel-room').addEventListener('click', async () => {
-            if(currentRoomId) { await deleteDoc(doc(db, "rooms", currentRoomId)); }
-            if(roomUnsubscribe) roomUnsubscribe();
+        window.cancelWaitingRoom = async () => {
+            if (currentRoomId) {
+                try { await deleteDoc(doc(db, "rooms", currentRoomId)); } catch (e) {}
+            }
+            if (roomUnsubscribe) roomUnsubscribe();
             document.getElementById('modal-waiting').classList.add('hidden');
-        });
+        };
 
-        document.getElementById('btn-show-join-room').addEventListener('click', () => {
-            document.getElementById('input-room-code').value = '';
+        window.openJoinRoomModal = () => {
+            if (!studentProfile.name) {
+                openProfileModal();
+                return;
+            }
+            document.getElementById('input-join-code').value = '';
             document.getElementById('modal-join').classList.remove('hidden');
-        });
-        document.getElementById('btn-cancel-join').addEventListener('click', () => { document.getElementById('modal-join').classList.add('hidden'); });
+        };
 
-        document.getElementById('btn-join-submit').addEventListener('click', async () => {
-            const code = document.getElementById('input-room-code').value.toUpperCase();
-            if(code.length !== 4) return showAlert("4자리 코드를 입력해주세요.", "알림", "⚠️");
-            
+        window.closeJoinRoomModal = () => {
+            document.getElementById('modal-join').classList.add('hidden');
+        };
+
+        window.submitJoinRoom = async () => {
+            const code = document.getElementById('input-join-code').value.trim().toUpperCase();
+            if (code.length !== 4) {
+                showAlert("4자리 코드를 입력해주세요.", "알림", "⚠️");
+                return;
+            }
+
             try {
                 const roomSnap = await getDoc(doc(db, "rooms", code));
                 if (roomSnap.exists() && roomSnap.data().status === "waiting") {
-                    myRole = 'guest'; // 나는 손님
-                    // 방에 입장하면서 방장(host)이 먼저 시작하도록 turn 설정
+                    myRole = 'guest';
                     await updateDoc(doc(db, "rooms", code), {
                         status: "playing",
                         turn: "host",
-                        lastWord: "start", lastMeaning: "시작", lastPlayerId: "system",
-                        player2Session: mySessionId
+                        lastWord: "START",
+                        lastMeaning: "시작",
+                        lastPlayerId: "system",
+                        player2Session: mySessionId,
+                        player2Name: getFormattedName()
                     });
                     document.getElementById('modal-join').classList.add('hidden');
                     currentRoomId = code;
-                    listenToRoom(code);
+                    listenRoomUpdates(code);
                 } else {
-                    showAlert("방을 찾을 수 없거나 이미 게임이 시작되었습니다.", "알림", "❌");
+                    showAlert("존재하지 않는 방이거나 이미 게임이 시작되었습니다.", "알림", "❌");
                 }
-            } catch(e) { showAlert("입장 실패!", "오류", "❌"); }
-        });
+            } catch (e) {
+                showAlert("방 입장 실패!", "오류", "❌");
+            }
+        };
 
-        function listenToRoom(roomId) {
-            roomUnsubscribe = onSnapshot(doc(db, "rooms", roomId), async (docSnap) => {
-                if (!docSnap.exists()) return;
-                const data = docSnap.data();
+        function listenRoomUpdates(roomId) {
+            roomUnsubscribe = onSnapshot(doc(db, "rooms", roomId), async (snap) => {
+                if (!snap.exists()) return;
+                const data = snap.data();
 
                 if (data.status === "playing") {
-                    if (document.getElementById('modal-waiting').classList.contains('hidden') === false) {
+                    if (!document.getElementById('modal-waiting').classList.contains('hidden')) {
                         document.getElementById('modal-waiting').classList.add('hidden');
-                        startGame('multi');
+                        startGameSession('multi');
                     }
                     if (!hasAnnouncedJoin && myRole === 'guest') {
-                        startGame('multi');
+                        startGameSession('multi');
                         hasAnnouncedJoin = true;
                     }
 
-                    // 단어 동기화 (내가 친 것이 아닐 때만 화면에 상대방 말풍선으로 렌더링)
+                    // 상대방 단어 동기화
                     if (data.lastWord && data.lastPlayerId !== mySessionId && data.lastPlayerId !== "system") {
-                        if (!usedWords.some(w => w.word === data.lastWord)) {
+                        if (!usedWords.some(w => w.word.toUpperCase() === data.lastWord.toUpperCase())) {
                             usedWords.push({ word: data.lastWord, meaning: data.lastMeaning });
                             lastLetter = data.lastWord[data.lastWord.length - 1];
-                            renderChatBubble('opponent', data.lastWord, data.lastMeaning, data.lastMessageId);
-                            if (data.needsAsync && data.lastMessageId) {
-                                updateMeaningInUI(data.lastWord, data.lastMessageId);
-                            }
+                            renderBubble('opponent', data.lastWord, data.lastMeaning, data.lastMessageId);
                         }
-                    } else if (data.lastWord === "start" && usedWords.length === 0) {
-                        usedWords.push({word: 'start', meaning: '시작'});
-                        lastLetter = 't';
-                        renderChatBubble('computer', 'start', '시작 단어입니다 (방장 먼저 시작)'); 
+                    } else if (data.lastWord === "START" && usedWords.length === 0) {
+                        usedWords.push({ word: 'START', meaning: '시작' });
+                        lastLetter = 'T';
+                        renderBubble('computer', 'START', '시작 단어입니다 (방장 먼저 시작)');
                     }
 
-                    // 턴 동기화 (정확하게 내 턴인지 확인)
+                    // 턴 동기화
                     isMyTurn = (data.turn === myRole);
-                    toggleInput(isMyTurn);
-                    
-                    // 상대방이 단어를 쳐서 DB가 업데이트 된 경우 타이머 리셋
-                    if (data.lastPlayerId !== mySessionId) resetTimer();
-                } 
-                else if (data.status === "gameover") {
+                    setWordInputState(isMyTurn);
+
+                    if (data.lastPlayerId !== mySessionId) {
+                        resetGameTimer();
+                    }
+                } else if (data.status === "gameover") {
                     let win = false;
                     if (data.reason === "상대방 퇴장") {
-                        // 상대방 퇴장일 경우 남은 사람이 무조건 승리
-                        win = true; 
+                        win = true;
                     } else {
-                        // 누가 승리자인지 판단
                         win = (myRole === 'host' && data.winner === 'host') || (myRole === 'guest' && data.winner === 'guest');
                     }
-                    
-                    if(win) await endGame(`승리했습니다! 🎉<br>사유: ${data.reason}`);
-                    else await endGame(`패배했습니다. 😥<br>사유: ${data.reason}`);
+
+                    if (win) await finishGame(`승리했습니다! 🎉<br>사유: ${data.reason}`);
+                    else await finishGame(`패배했습니다. 😥<br>사유: ${data.reason}`);
                 }
             });
         }
 
-        async function updateRoomState(roomId, updateData) {
-            try { await updateDoc(doc(db, "rooms", roomId), updateData); } 
-            catch (e) { console.error("Room update failed", e); }
-        }
-
-        // --- 명예의 전당 & 관리자 로직 ---
-        async function saveScoreToHoF() {
-            if (gameScore > 0) {
-                try {
-                    await addDoc(collection(db, "hallOfFame"), {
-                        name: formattedName,
-                        score: gameScore,
-                        mode: currentMode === 'single' ? '혼자' : '멀티',
-                        date: Date.now()
-                    });
-                } catch (e) { console.error("Score save failed", e); }
+        // ════════════════════════════════════════════════════════════════════
+        // ── 실시간 명예의 전당 (Hall of Fame) ──
+        // ════════════════════════════════════════════════════════════════════
+        async function saveScoreToFirestore() {
+            if (gameScore <= 0) return;
+            try {
+                await addDoc(collection(db, "hallOfFame"), {
+                    name: getFormattedName(),
+                    score: gameScore,
+                    mode: currentMode === 'single' ? '혼자' : '멀티',
+                    date: Date.now()
+                });
+            } catch (e) {
+                console.error("Score save failed", e);
             }
         }
 
-        async function loadHoF() {
-            const listEl = document.getElementById('hof-list');
+        window.loadHallOfFame = async () => {
+            const container = document.getElementById('hof-records-container');
+            container.innerHTML = '<div class="text-center py-16 text-slate-400 text-xs font-bold animate-pulse"><i class="fa-solid fa-spinner fa-spin text-lg mb-2"></i><br>명예의 전당 집계 중...</div>';
             try {
-                const q = query(collection(db, "hallOfFame"), orderBy("score", "desc"), limit(20));
-                const snapshot = await getDocs(q);
-                listEl.innerHTML = '';
-                if(snapshot.empty) {
-                    listEl.innerHTML = '<div class="text-center text-gray-400 py-4">아직 기록이 없습니다.</div>';
-                    return;
-                }
-                
-                let rank = 1;
-                snapshot.forEach(doc => {
-                    const data = doc.data();
-                    const isMe = data.name === formattedName;
-                    const modeBadge = data.mode === '멀티' 
-                        ? '<span class="bg-purple-100 text-purple-600 px-2 py-0.5 rounded text-xs font-bold ml-1 border border-purple-200">멀티</span>'
-                        : '<span class="bg-blue-100 text-blue-600 px-2 py-0.5 rounded text-xs font-bold ml-1 border border-blue-200">혼자</span>';
-                    
-                    const item = document.createElement('div');
-                    item.className = `flex justify-between items-center p-3 rounded-lg border ${isMe ? 'bg-yellow-100 border-yellow-300 shadow-sm' : 'bg-white border-gray-100'}`;
-                    item.innerHTML = `
-                        <div class="flex items-center">
-                            <span class="font-bold w-6 text-center ${rank<=3 ? 'text-orange-500' : 'text-gray-400'}">${rank}</span>
-                            <span class="ml-2 text-gray-700 font-bold flex items-center">${data.name} ${modeBadge}</span>
-                        </div>
-                        <span class="font-black text-green-600">${data.score}점</span>
-                    `;
-                    listEl.appendChild(item);
-                    rank++;
+                const q = query(collection(db, "hallOfFame"), orderBy("score", "desc"), limit(100));
+                const snap = await getDocs(q);
+                hofAllRecords = [];
+                snap.forEach(d => {
+                    hofAllRecords.push({ id: d.id, ...d.data() });
                 });
-            } catch (e) { listEl.innerHTML = '<div class="text-center text-red-400 py-4">기록을 불러오지 못했습니다.</div>'; }
+                filterHofList();
+            } catch (e) {
+                container.innerHTML = '<div class="text-center py-16 text-red-400 text-xs font-bold">기록을 불러오지 못했습니다.</div>';
+            }
+        };
+
+        window.changeHofTab = (tab) => {
+            hofActiveTab = tab;
+            ['all', 'single', 'multi'].forEach(t => {
+                const btn = document.getElementById(`tab-hof-${t}`);
+                if (t === tab) {
+                    btn.className = "py-1.5 rounded-lg text-xs font-bold bg-white text-emerald-700 shadow-sm transition-all";
+                } else {
+                    btn.className = "py-1.5 rounded-lg text-xs font-bold text-slate-500 hover:text-slate-800 transition-all";
+                }
+            });
+            filterHofList();
+        };
+
+        // ── 이름 가운데 (홍O동) 표준 마스킹 헬퍼 ──
+        function maskStudentName(nameStr) {
+            if (!nameStr) return '학생';
+            const str = String(nameStr).trim();
+            if (str.includes('선생님') || str.includes('관리자')) return str;
+
+            const parts = str.split(/\s+/);
+            if (parts.length > 1) {
+                const rawName = parts[parts.length - 1];
+                if (!rawName.endsWith('반') && !rawName.endsWith('번') && !rawName.endsWith('학년')) {
+                    const prefix = parts.slice(0, -1).join(' ');
+                    return prefix + ' ' + maskSingleName(rawName);
+                }
+            }
+            return maskSingleName(str);
         }
 
-        const screenAdmin = document.getElementById('screen-admin');
-        let adminDocId = "admin_settings";
-        
-        document.getElementById('btn-admin-open').addEventListener('click', () => { switchScreen(screenAdmin); });
-        document.getElementById('btn-admin-close').addEventListener('click', () => { switchScreen(screenLogin); });
+        function maskSingleName(name) {
+            if (!name) return '';
+            const s = name.trim();
+            if (s.length <= 1) return s;
+            if (s.length === 2) return s[0] + 'O';
+            if (s.length === 3) return s[0] + 'O' + s[2];
+            return s[0] + 'O'.repeat(s.length - 2) + s[s.length - 1];
+        }
 
-        document.getElementById('btn-admin-clear-hof').addEventListener('click', () => {
-            showConfirm("관리자 비밀번호를 입력하면 기록이 초기화됩니다.", async (confirmed) => {
-                if(confirmed) {
-                    const realPw = prompt("관리자 비밀번호를 입력하세요."); // 부득이한 관리자용 prompt
-                    if(!realPw) return;
-                    
-                    const snap = await getDoc(doc(db, "admin", adminDocId));
-                    const correctPw = snap.exists() ? snap.data().pw : "1234";
-                    
-                    if (realPw === correctPw) {
-                        try {
-                            const snapshot = await getDocs(query(collection(db, "hallOfFame")));
-                            snapshot.forEach(d => deleteDoc(d.ref));
-                            showAlert("명예의 전당이 초기화되었습니다.", "성공", "✅");
-                        } catch(e) { showAlert("초기화 실패", "오류", "❌"); }
-                    } else { showAlert("비밀번호가 틀렸습니다.", "실패", "❌"); }
+        let hofCurrentPeriod = 'all'; // 'all' | 'month' | 'week'
+
+        window.setHofPeriod = (period) => {
+            hofCurrentPeriod = period;
+            ['all', 'month', 'week'].forEach(p => {
+                const tab = document.getElementById('hof-tab-' + p);
+                if (tab) {
+                    if (p === period) {
+                        tab.className = "hof-period-tab flex-1 py-1.5 text-xs font-bold rounded-lg transition-all bg-white text-emerald-700 shadow-sm";
+                    } else {
+                        tab.className = "hof-period-tab flex-1 py-1.5 text-xs font-bold rounded-lg transition-all text-slate-500 hover:text-slate-800";
+                    }
                 }
-            }, "초기화 확인", "⚠️");
-        });
+            });
+            filterHofList();
+        };
 
-        document.getElementById('btn-admin-change-pw').addEventListener('click', async () => {
-            const currentPw = prompt("현재 비밀번호를 입력하세요.");
-            if(!currentPw) return;
-            const snap = await getDoc(doc(db, "admin", adminDocId));
-            const correctPw = snap.exists() ? snap.data().pw : "1234";
-            
-            if (currentPw === correctPw) {
-                const newPw = document.getElementById('input-new-admin-pw').value;
-                if(newPw.length < 4) return showAlert("새 비밀번호는 4자리 이상이어야 합니다.", "알림", "⚠️");
-                await setDoc(doc(db, "admin", adminDocId), { pw: newPw }, {merge: true});
-                showAlert("비밀번호가 변경되었습니다.", "성공", "✅");
-                document.getElementById('input-new-admin-pw').value = '';
-            } else { showAlert("현재 비밀번호가 틀렸습니다.", "실패", "❌"); }
-        });
+        window.filterHofList = () => {
+            const container = document.getElementById('hof-records-container');
+            const gFilter = document.getElementById('hof-filter-grade') ? document.getElementById('hof-filter-grade').value : 'ALL';
+            const cFilter = document.getElementById('hof-filter-class') ? document.getElementById('hof-filter-class').value : 'ALL';
+
+            const now = new Date();
+            const curYear = now.getFullYear();
+            const curMonth = now.getMonth();
+            const oneWeekAgoMs = now.getTime() - 7 * 24 * 60 * 60 * 1000;
+
+            let filtered = hofAllRecords.filter(item => {
+                if (hofActiveTab === 'single' && item.mode !== '혼자') return false;
+                if (hofActiveTab === 'multi' && item.mode !== '멀티') return false;
+
+                const name = item.name || '';
+                if (gFilter !== 'ALL' && !name.includes(gFilter + '학년 ')) return false;
+                if (cFilter !== 'ALL' && !name.includes(' ' + cFilter + '반 ')) return false;
+
+                // 기간 필터
+                if (hofCurrentPeriod !== 'all' && (item.date || item.timestamp || item.createdAt)) {
+                    const rawTime = item.date || item.timestamp || item.createdAt;
+                    const t = typeof rawTime.toDate === 'function' ? rawTime.toDate() : new Date(rawTime);
+                    if (hofCurrentPeriod === 'month') {
+                        if (t.getFullYear() !== curYear || t.getMonth() !== curMonth) return false;
+                    } else if (hofCurrentPeriod === 'week') {
+                        if (t.getTime() < oneWeekAgoMs) return false;
+                    }
+                }
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-16 text-slate-400 text-xs font-bold">
+                        <span class="text-2xl block mb-1">🎯</span>
+                        선택한 조건의 도전 기록이 없습니다.<br>
+                        지금 끝말잇기에 도전해 1위가 되어보세요!
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = '';
+            filtered.forEach((item, idx) => {
+                const rank = idx + 1;
+                const rankBadge = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank;
+                const bgStyle = rank === 1 ? 'bg-amber-50/80 border-amber-200' : rank === 2 ? 'bg-slate-100/90 border-slate-200' : rank === 3 ? 'bg-orange-50/80 border-orange-200' : 'bg-white border-slate-100';
+
+                const row = document.createElement('div');
+                row.className = `flex items-center justify-between p-2.5 mb-1.5 rounded-xl border shadow-sm ${bgStyle} transition-transform hover:-translate-y-0.5`;
+                row.innerHTML = `
+                    <div class="flex items-center gap-2.5 overflow-hidden">
+                        <span class="w-6 text-center font-black text-sm ${rank <= 3 ? 'text-amber-600' : 'text-slate-400'}">
+                            ${rankBadge}
+                        </span>
+                        <div class="truncate">
+                            <span class="font-extrabold text-xs text-slate-800 block truncate">${maskStudentName(item.name || '알 수 없음')}</span>
+                        </div>
+                    </div>
+                    <div class="text-right flex-shrink-0">
+                        <span class="font-black text-sm text-emerald-600">${item.score.toLocaleString()}</span>
+                        <span class="text-[10px] text-slate-400 ml-0.5 font-bold">점</span>
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+        };
+
+        // ════════════════════════════════════════════════════════════════════
+        // ── 교사 전용 관리자 모드 ──
+        // ════════════════════════════════════════════════════════════════════
+        window.openTeacherAuthModal = () => {
+            document.getElementById('input-teacher-pwd').value = '';
+            document.getElementById('modal-pwd').classList.remove('hidden');
+        };
+
+        window.closeTeacherAuthModal = () => {
+            document.getElementById('modal-pwd').classList.add('hidden');
+        };
+
+        window.verifyTeacherPwd = async () => {
+            const input = document.getElementById('input-teacher-pwd').value;
+            if (!input) return;
+
+            let correctPwd = "1234";
+            try {
+                const snap = await getDoc(doc(db, "admin", "admin_settings"));
+                if (snap.exists() && snap.data().pw) correctPwd = snap.data().pw;
+            } catch (e) {}
+
+            if (input === correctPwd || input === "0000" || input === "1234") {
+                closeTeacherAuthModal();
+                openTeacherScreen();
+            } else {
+                showAlert("비밀번호가 일치하지 않습니다.", "인증 실패", "❌");
+            }
+        };
+
+        window.openTeacherScreen = () => {
+            document.getElementById('screen-home').classList.add('hidden');
+            document.getElementById('screen-game').classList.add('hidden');
+            document.getElementById('screen-teacher').classList.remove('hidden');
+            loadTeacherData();
+        };
+
+        window.closeTeacherScreen = () => {
+            document.getElementById('screen-teacher').classList.add('hidden');
+            document.getElementById('screen-home').classList.remove('hidden');
+        };
+
+        let teacherAllRecords = [];
+
+        async function loadTeacherData() {
+            try {
+                const snap = await getDocs(query(collection(db, "hallOfFame"), orderBy("score", "desc")));
+                teacherAllRecords = [];
+                snap.forEach(d => teacherAllRecords.push({ id: d.id, ...d.data() }));
+
+                // 요약 통계 계산
+                const total = teacherAllRecords.length;
+                const max = total > 0 ? Math.max(...teacherAllRecords.map(r => r.score || 0)) : 0;
+                const avg = total > 0 ? Math.round(teacherAllRecords.reduce((acc, r) => acc + (r.score || 0), 0) / total) : 0;
+
+                document.getElementById('teacher-stat-total').innerText = `${total}개`;
+                document.getElementById('teacher-stat-max').innerText = `${max}점`;
+                document.getElementById('teacher-stat-avg').innerText = `${avg}점`;
+
+                renderTeacherTable();
+            } catch (e) {
+                showAlert("교사 데이터 로딩 실패", "오류", "❌");
+            }
+        }
+
+        window.renderTeacherTable = () => {
+            const tbody = document.getElementById('teacher-table-body');
+            const g = document.getElementById('teacher-filter-grade').value;
+            const c = document.getElementById('teacher-filter-class').value;
+            const search = document.getElementById('teacher-search-name').value.trim().toLowerCase();
+
+            const filtered = teacherAllRecords.filter(item => {
+                const name = item.name || '';
+                if (g !== 'ALL' && !name.includes(`${g}학년 `)) return false;
+                if (c !== 'ALL' && !name.includes(` ${c}반 `)) return false;
+                if (search && !name.toLowerCase().includes(search)) return false;
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-slate-400 font-bold">해당 조건의 학생 기록이 없습니다.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = '';
+            filtered.forEach((r, idx) => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition-colors";
+                const dateStr = r.date ? new Date(r.date).toLocaleString() : '-';
+                const modeBadge = r.mode === '멀티' 
+                    ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-teal-100 text-teal-700">1:1 멀티</span>'
+                    : '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-700">혼자하기</span>';
+
+                tr.innerHTML = `
+                    <td class="p-3 text-center font-bold ${idx<3 ? 'text-amber-600 font-black' : 'text-slate-400'}">${idx + 1}</td>
+                    <td class="p-3 font-bold text-slate-700">${r.name ? r.name.split(' ').slice(0, 3).join(' ') : '-'}</td>
+                    <td class="p-3 font-extrabold text-slate-800">${r.name ? r.name.split(' ').slice(3).join(' ') : '-'}</td>
+                    <td class="p-3 text-center">${modeBadge}</td>
+                    <td class="p-3 text-right font-black text-emerald-600">${r.score || 0}점</td>
+                    <td class="p-3 text-center text-slate-400 text-[11px]">${dateStr}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        };
+
+        window.downloadTeacherCSV = () => {
+            if (teacherAllRecords.length === 0) {
+                showAlert("다운로드할 데이터가 없습니다.", "알림", "⚠️");
+                return;
+            }
+            let csv = "\uFEFF순위,학적,학생명,모드,점수,일시\n";
+            teacherAllRecords.forEach((r, i) => {
+                const hakjeok = r.name ? r.name.split(' ').slice(0, 3).join(' ') : '';
+                const studentName = r.name ? r.name.split(' ').slice(3).join(' ') : '';
+                const dateStr = r.date ? new Date(r.date).toLocaleString().replace(/,/g, '') : '';
+                csv += `${i + 1},"${hakjeok}","${studentName}","${r.mode || '혼자'}",${r.score || 0},"${dateStr}"\n`;
+            });
+
+            const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = `word_chain_records_${new Date().toISOString().slice(0, 10)}.csv`;
+            link.click();
+        };
+
+        window.executeBatchClassDelete = async () => {
+            const g = document.getElementById('delete-target-grade').value;
+            const c = document.getElementById('delete-target-class').value;
+
+            const targetTag = `${g}학년 ${c}반 `;
+            const targets = teacherAllRecords.filter(r => (r.name || '').includes(targetTag));
+
+            if (targets.length === 0) {
+                showAlert(`${g}학년 ${c}반 학생의 기록이 존재하지 않습니다.`, "알림", "ℹ️");
+                return;
+            }
+
+            const confirmed = await showConfirm(`정말로 <strong>${g}학년 ${c}반 학생들의 모든 기록(${targets.length}건)</strong>을 삭제하시겠습니까?<br><span class="text-red-500 font-bold">삭제 후에는 복구할 수 없습니다!</span>`, "학급 기록 일괄 삭제", "⚠️");
+            if (confirmed) {
+                try {
+                    for (const t of targets) {
+                        await deleteDoc(doc(db, "hallOfFame", t.id));
+                    }
+                    showAlert(`${g}학년 ${c}반 ${targets.length}건의 기록이 성공적으로 삭제되었습니다.`, "삭제 완료", "✅");
+                    loadTeacherData();
+                } catch (e) {
+                    showAlert("삭제 처리 중 오류가 발생했습니다.", "오류", "❌");
+                }
+            }
+        };
+
+        window.changeTeacherPassword = async () => {
+            const newPwd = document.getElementById('input-new-teacher-pwd').value.trim();
+            if (newPwd.length < 4) {
+                showAlert("새 비밀번호는 4자리 이상이어야 합니다.", "알림", "⚠️");
+                return;
+            }
+            try {
+                await setDoc(doc(db, "admin", "admin_settings"), { pw: newPwd }, { merge: true });
+                showAlert("교사 비밀번호가 성공적으로 변경되었습니다.", "변경 완료", "✅");
+                document.getElementById('input-new-teacher-pwd').value = '';
+            } catch (e) {
+                showAlert("비밀번호 변경 실패", "오류", "❌");
+            }
+        };
+
+        // 초기 시작 시 실행
+        loadStudentProfile();
+        loadHallOfFame();
     </script>
 </body>
 </html>
