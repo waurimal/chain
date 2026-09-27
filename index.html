@@ -1531,7 +1531,8 @@
                 if (snap.exists() && snap.data().pw) correctPwd = snap.data().pw;
             } catch (e) {}
 
-            if (input === correctPwd || input === "0000" || input === "1234") {
+            const waurimalPw = localStorage.getItem('waurimal_admin_pw');
+            if (input === correctPwd || input === "0000" || input === "1234" || (waurimalPw && input === waurimalPw)) {
                 closeTeacherAuthModal();
                 openTeacherScreen();
             } else {
@@ -1665,6 +1666,7 @@
             }
             try {
                 await setDoc(doc(db, "admin", "admin_settings"), { pw: newPwd }, { merge: true });
+                localStorage.setItem('waurimal_admin_pw', newPwd);
                 showAlert("교사 비밀번호가 성공적으로 변경되었습니다.", "변경 완료", "✅");
                 document.getElementById('input-new-teacher-pwd').value = '';
             } catch (e) {
