@@ -733,280 +733,242 @@
         const COMMON_WORDS_DB = new Set(rawDictString.split(','));
 
         const commonMeanings = {
-          "APPLE": "사과",
-          "BANANA": "바나나",
-          "CAT": "고양이",
-          "DOG": "개",
-          "ELEPHANT": "코끼리",
-          "FISH": "물고기",
-          "GIRL": "소녀",
-          "HOUSE": "집",
-          "ICE": "얼음",
-          "JUICE": "주스",
-          "KITE": "연",
-          "LION": "사자",
-          "MONKEY": "원숭이",
-          "NOSE": "코",
-          "ORANGE": "오렌지",
-          "PIG": "돼지",
-          "QUEEN": "여왕",
-          "RABBIT": "토끼",
-          "SUN": "태양",
-          "TREE": "나무",
-          "UMBRELLA": "우산",
-          "VAN": "승합차",
-          "WATER": "물",
-          "XYLOPHONE": "실로폰",
-          "YELLOW": "노란색",
-          "ZEBRA": "얼룩말",
-          "ANT": "개미",
-          "BEAR": "곰",
-          "COW": "소",
-          "DUCK": "오리",
-          "EGG": "계란",
-          "FROG": "개구리",
-          "GOAT": "염소",
-          "HORSE": "말",
-          "INK": "잉크",
-          "JAM": "잼",
-          "KING": "왕",
-          "LEMON": "레몬",
-          "MOUSE": "쥐",
-          "NUT": "견과류",
-          "OWL": "올빼미",
-          "PEN": "펜",
-          "CUP": "컵",
-          "DESK": "책상",
-          "ROAD": "길",
-          "TIGER": "호랑이",
-          "SCHOOL": "학교",
-          "BOOK": "책",
-          "BAG": "가방",
-          "BOY": "소년",
-          "CAP": "모자",
-          "CAR": "자동차",
-          "DOLL": "인형",
-          "DOOR": "문",
-          "TOUCH": "만지다",
-          "PLAY": "놀다",
-          "RUN": "달리다",
-          "JUMP": "뛰다",
-          "WALK": "걷다",
-          "TALK": "말하다",
-          "STUDY": "공부하다",
-          "SLEEP": "자다",
-          "EAT": "먹다",
-          "DRINK": "마시다",
-          "READ": "읽다",
-          "WRITE": "쓰다",
-          "LISTEN": "듣다",
-          "SPEAK": "말하다",
-          "LOOK": "보다",
-          "SEE": "보다",
-          "WATCH": "보다",
-          "STOP": "멈추다",
-          "GO": "가다",
-          "COME": "오다",
-          "LOVE": "사랑하다",
-          "LIKE": "좋아하다",
-          "HATE": "싫어하다",
-          "HAPPY": "행복한",
-          "SAD": "슬픈",
-          "ANGRY": "화난",
-          "GOOD": "좋은",
-          "BAD": "나쁜",
-          "BIG": "큰",
-          "SMALL": "작은",
-          "PENCIL": "연필",
-          "RULER": "자",
-          "ERASER": "지우개",
-          "SCISSORS": "가위",
-          "CRAYON": "크레용",
-          "NOTEBOOK": "공책",
-          "CLASSROOM": "교실",
-          "BLACKBOARD": "칠판",
-          "PAPER": "종이",
-          "GLUE": "풀",
-          "STATIONERY": "문구류",
-          "PLAYGROUND": "운동장",
-          "HOMEWORK": "숙제",
-          "LESSON": "수업",
-          "GIRAFFE": "기린",
-          "PANDA": "판다",
-          "KANGAROO": "캥거루",
-          "PENGUIN": "펭귄",
-          "DOLPHIN": "돌고래",
-          "WHALE": "고래",
-          "SHARK": "상어",
-          "TURTLE": "거북이",
-          "SHEEP": "양",
-          "CHICKEN": "닭",
-          "WOLF": "늑대",
-          "EAGLE": "독수리",
-          "SNAKE": "뱀",
-          "DEER": "사슴",
-          "CAMEL": "낙타",
-          "KOALA": "코알라",
-          "SPIDER": "거미",
-          "BUTTERFLY": "나비",
-          "LIZARD": "도마뱀",
-          "SEAL": "물개",
-          "GRAPE": "포도",
-          "STRAWBERRY": "딸기",
-          "WATERMELON": "수박",
-          "PEACH": "복숭아",
-          "TOMATO": "토마토",
-          "POTATO": "감자",
-          "CARROT": "당근",
-          "ONION": "양파",
-          "CORN": "옥수수",
-          "CHEESE": "치즈",
-          "PIZZA": "피자",
-          "HAMBURGER": "햄버거",
-          "SANDWICH": "샌드위치",
-          "CAKE": "케이크",
-          "COOKIE": "쿠키",
-          "CANDY": "사탕",
-          "CHOCOLATE": "초콜릿",
-          "BUTTER": "버터",
-          "SALAD": "샐러드",
-          "BEEF": "소고기",
-          "NOODLE": "국수",
-          "SOUP": "수프",
-          "SNACK": "간식",
-          "STEAK": "스테이크",
-          "PURPLE": "보라색",
-          "PINK": "분홍색",
-          "BROWN": "갈색",
-          "WHITE": "흰색",
-          "GRAY": "회색",
-          "COLOR": "색깔",
-          "RAINBOW": "무지개",
-          "MORNING": "아침",
-          "AFTERNOON": "오후",
-          "EVENING": "저녁",
-          "NIGHT": "밤",
-          "TODAY": "오늘",
-          "TOMORROW": "내일",
-          "YESTERDAY": "어제",
-          "MONDAY": "월요일",
-          "TUESDAY": "화요일",
-          "WEDNESDAY": "수요일",
-          "THURSDAY": "목요일",
-          "FRIDAY": "금요일",
-          "SATURDAY": "토요일",
-          "SUNDAY": "일요일",
-          "JANUARY": "1월",
-          "FEBRUARY": "2월",
-          "MARCH": "3월",
-          "APRIL": "4월",
-          "MAY": "5월",
-          "JUNE": "6월",
-          "JULY": "7월",
-          "AUGUST": "8월",
-          "SEPTEMBER": "9월",
-          "OCTOBER": "10월",
-          "NOVEMBER": "11월",
-          "DECEMBER": "12월",
-          "SPRING": "봄",
-          "SUMMER": "여름",
-          "FALL": "가을",
-          "AUTUMN": "가을",
-          "WINTER": "겨울",
-          "SEASON": "계절",
-          "WEATHER": "날씨",
-          "RAINY": "비 오는",
-          "SUNNY": "화창한",
-          "CLOUDY": "흐린",
-          "SNOWY": "눈 오는",
-          "WINDY": "바람 부는",
-          "FLOWER": "꽃",
-          "LEAF": "나뭇잎",
-          "FOREST": "숲",
-          "MOUNTAIN": "산",
-          "RIVER": "강",
-          "LAKE": "호수",
-          "BEACH": "해변",
-          "OCEAN": "대양",
-          "STAR": "별",
-          "STONE": "돌",
-          "ROCK": "바위",
-          "FATHER": "아버지",
-          "MOTHER": "어머니",
-          "BROTHER": "형제",
-          "SISTER": "자매",
-          "GRANDFATHER": "할아버지",
-          "GRANDMOTHER": "할머니",
-          "UNCLE": "삼촌",
-          "AUNT": "이모/고모",
-          "COUSIN": "사촌",
-          "FAMILY": "가족",
-          "POLICE": "경찰",
-          "FARMER": "농부",
-          "PILOT": "조종사",
-          "SOCCER": "축구",
-          "BASEBALL": "야구",
-          "BASKETBALL": "농구",
-          "TENNIS": "테니스",
-          "BADMINTON": "배드민턴",
-          "SWIMMING": "수영",
-          "SKATING": "스케이트",
-          "SKIING": "스키",
-          "PIANO": "피아노",
-          "GUITAR": "기타",
-          "VIOLIN": "바이올린",
-          "DRUM": "드럼",
-          "FLUTE": "플루트",
-          "HOSPITAL": "병원",
-          "BAKERY": "빵집",
-          "RESTAURANT": "식당",
-          "MUSEUM": "박물관",
-          "CINEMA": "영화관",
-          "AIRPORT": "공항",
-          "STATION": "역",
-          "MARKET": "시장",
-          "KITCHEN": "주방",
-          "BEDROOM": "침실",
-          "BATHROOM": "욕실",
-          "SHIRT": "셔츠",
-          "PANTS": "바지",
-          "DRESS": "원피스",
-          "SKIRT": "치마",
-          "JACKET": "재킷",
-          "SWEATER": "스웨터",
-          "SOCKS": "양말",
-          "SHOES": "신발",
-          "BOOTS": "부츠",
-          "GLASSES": "안경",
-          "WALLET": "지갑",
-          "TOWEL": "수건",
-          "PLATE": "접시",
-          "FORK": "포크",
-          "SPOON": "숟가락",
-          "KNIFE": "칼",
-          "ROBOT": "로봇",
-          "COMPUTER": "컴퓨터",
-          "PRETTY": "예쁜",
-          "CUTE": "귀여운",
-          "BEAUTIFUL": "아름다운",
-          "SMART": "똑똑한",
-          "STRONG": "강한",
-          "BRAVE": "용감한",
-          "FAST": "빠른",
-          "SLOW": "느린",
-          "TALL": "키가 큰",
-          "SHORT": "키가 작은",
-          "HEAVY": "무거운",
-          "LIGHT": "가벼운",
-          "BUSY": "바쁜",
-          "HUNGRY": "배고픈",
-          "THIRSTY": "목마른",
-          "TIRED": "피곤한",
-          "SWEET": "달콤한",
-          "WARM": "따뜻한",
-          "COOL": "시원한",
-          "QUIET": "조용한"
-};
+          "APPLE": "사과", "BANANA": "바나나", "CAT": "고양이", "DOG": "개",
+          "ELEPHANT": "코끼리", "FISH": "물고기", "GIRL": "소녀", "HOUSE": "집",
+          "ICE": "얼음", "JUICE": "주스", "KITE": "연", "LION": "사자",
+          "MONKEY": "원숭이", "NOSE": "코", "ORANGE": "오렌지", "PIG": "돼지",
+          "QUEEN": "여왕", "RABBIT": "토끼", "SUN": "태양", "TREE": "나무",
+          "UMBRELLA": "우산", "VAN": "승합차", "WATER": "물", "XYLOPHONE": "실로폰",
+          "YELLOW": "노란색", "ZEBRA": "얼룩말", "ANT": "개미", "BEAR": "곰",
+          "COW": "소", "DUCK": "오리", "EGG": "계란", "FROG": "개구리",
+          "GOAT": "염소", "HORSE": "말", "INK": "잉크", "JAM": "잼",
+          "KING": "왕", "LEMON": "레몬", "MOUSE": "쥐", "NUT": "견과류",
+          "OWL": "올빼미", "PEN": "펜", "CUP": "컵", "DESK": "책상",
+          "ROAD": "길", "TIGER": "호랑이", "SCHOOL": "학교", "BOOK": "책",
+          "BAG": "가방", "BOY": "소년", "CAP": "모자", "CAR": "자동차",
+          "DOLL": "인형", "DOOR": "문", "TOUCH": "만지다", "PLAY": "놀다",
+          "RUN": "달리다", "JUMP": "뛰다", "WALK": "걷다", "TALK": "말하다",
+          "STUDY": "공부하다", "SLEEP": "자다", "EAT": "먹다", "DRINK": "마시다",
+          "READ": "읽다", "WRITE": "쓰다", "LISTEN": "듣다", "SPEAK": "말하다",
+          "LOOK": "보다", "SEE": "보다", "WATCH": "보다", "STOP": "멈추다",
+          "GO": "가다", "COME": "오다", "LOVE": "사랑하다", "LIKE": "좋아하다",
+          "HATE": "싫어하다", "HAPPY": "행복한", "SAD": "슬픈", "ANGRY": "화난",
+          "GOOD": "좋은", "BAD": "나쁜", "BIG": "큰", "SMALL": "작은",
+          "PENCIL": "연필", "RULER": "자", "ERASER": "지우개", "SCISSORS": "가위",
+          "CRAYON": "크레용", "NOTEBOOK": "공책", "CLASSROOM": "교실", "BLACKBOARD": "칠판",
+          "PAPER": "종이", "GLUE": "풀", "STATIONERY": "문구류", "PLAYGROUND": "운동장",
+          "HOMEWORK": "숙제", "LESSON": "수업", "GIRAFFE": "기린", "PANDA": "판다",
+          "KANGAROO": "캥거루", "PENGUIN": "펭귄", "DOLPHIN": "돌고래", "WHALE": "고래",
+          "SHARK": "상어", "TURTLE": "거북이", "SHEEP": "양", "CHICKEN": "닭",
+          "WOLF": "늑대", "EAGLE": "독수리", "SNAKE": "뱀", "DEER": "사슴",
+          "CAMEL": "낙타", "KOALA": "코알라", "SPIDER": "거미", "BUTTERFLY": "나비",
+          "LIZARD": "도마뱀", "SEAL": "물개", "GRAPE": "포도", "STRAWBERRY": "딸기",
+          "WATERMELON": "수박", "PEACH": "복숭아", "TOMATO": "토마토", "POTATO": "감자",
+          "CARROT": "당근", "ONION": "양파", "CORN": "옥수수", "CHEESE": "치즈",
+          "PIZZA": "피자", "HAMBURGER": "햄버거", "SANDWICH": "샌드위치", "CAKE": "케이크",
+          "COOKIE": "쿠키", "CANDY": "사탕", "CHOCOLATE": "초콜릿", "BUTTER": "버터",
+          "SALAD": "샐러드", "BEEF": "소고기", "NOODLE": "국수", "SOUP": "수프",
+          "SNACK": "간식", "STEAK": "스테이크", "PURPLE": "보라색", "PINK": "분홍색",
+          "BROWN": "갈색", "WHITE": "흰색", "GRAY": "회색", "COLOR": "색깔",
+          "RAINBOW": "무지개", "MORNING": "아침", "AFTERNOON": "오후", "EVENING": "저녁",
+          "NIGHT": "밤", "TODAY": "오늘", "TOMORROW": "내일", "YESTERDAY": "어제",
+          "MONDAY": "월요일", "TUESDAY": "화요일", "WEDNESDAY": "수요일", "THURSDAY": "목요일",
+          "FRIDAY": "금요일", "SATURDAY": "토요일", "SUNDAY": "일요일", "JANUARY": "1월",
+          "FEBRUARY": "2월", "MARCH": "3월", "APRIL": "4월", "MAY": "5월",
+          "JUNE": "6월", "JULY": "7월", "AUGUST": "8월", "SEPTEMBER": "9월",
+          "OCTOBER": "10월", "NOVEMBER": "11월", "DECEMBER": "12월", "SPRING": "봄",
+          "SUMMER": "여름", "FALL": "가을", "AUTUMN": "가을", "WINTER": "겨울",
+          "SEASON": "계절", "WEATHER": "날씨", "RAINY": "비 오는", "SUNNY": "화창한",
+          "CLOUDY": "흐린", "SNOWY": "눈 오는", "WINDY": "바람 부는", "FLOWER": "꽃",
+          "LEAF": "나뭇잎", "FOREST": "숲", "MOUNTAIN": "산", "RIVER": "강",
+          "LAKE": "호수", "BEACH": "해변", "OCEAN": "대양", "STAR": "별",
+          "STONE": "돌", "ROCK": "바위", "FATHER": "아버지", "MOTHER": "어머니",
+          "BROTHER": "형제", "SISTER": "자매", "GRANDFATHER": "할아버지", "GRANDMOTHER": "할머니",
+          "UNCLE": "삼촌", "AUNT": "이모/고모", "COUSIN": "사촌", "FAMILY": "가족",
+          "POLICE": "경찰", "FARMER": "농부", "PILOT": "조종사", "SOCCER": "축구",
+          "BASEBALL": "야구", "BASKETBALL": "농구", "TENNIS": "테니스", "BADMINTON": "배드민턴",
+          "SWIMMING": "수영", "SKATING": "스케이트", "SKIING": "스키", "PIANO": "피아노",
+          "GUITAR": "기타", "VIOLIN": "바이올린", "DRUM": "드럼", "FLUTE": "플루트",
+          "HOSPITAL": "병원", "BAKERY": "빵집", "RESTAURANT": "식당", "MUSEUM": "박물관",
+          "CINEMA": "영화관", "AIRPORT": "공항", "STATION": "역", "MARKET": "시장",
+          "KITCHEN": "주방", "BEDROOM": "침실", "BATHROOM": "욕실", "SHIRT": "셔츠",
+          "PANTS": "바지", "DRESS": "원피스", "SKIRT": "치마", "JACKET": "재킷",
+          "SWEATER": "스웨터", "SOCKS": "양말", "SHOES": "신발", "BOOTS": "부츠",
+          "GLASSES": "안경", "WALLET": "지갑", "TOWEL": "수건", "PLATE": "접시",
+          "FORK": "포크", "SPOON": "숟가락", "KNIFE": "칼", "ROBOT": "로봇",
+          "COMPUTER": "컴퓨터", "PRETTY": "예쁜", "CUTE": "귀여운", "BEAUTIFUL": "아름다운",
+          "SMART": "똑똑한", "STRONG": "강한", "BRAVE": "용감한", "FAST": "빠른",
+          "SLOW": "느린", "TALL": "키가 큰", "SHORT": "키가 작은", "HEAVY": "무거운",
+          "LIGHT": "가벼운", "BUSY": "바쁜", "HUNGRY": "배고픈", "THIRSTY": "목마른",
+          "TIRED": "피곤한", "SWEET": "달콤한", "WARM": "따뜻한", "COOL": "시원한",
+          "QUIET": "조용한", "ABOUT": "대하여", "ABOVE": "위에", "ACROSS": "건너서",
+          "ACT": "행동하다", "ACTION": "행동", "ACTIVE": "활동적인", "ACTOR": "배우",
+          "ADD": "더하다", "ADDRESS": "주소", "ADULT": "어른", "AFRAID": "두려운",
+          "AFTER": "후에", "AGAIN": "다시", "AGE": "나이", "AIR": "공기",
+          "AIRLINE": "항공사", "ALARM": "경보", "ALIVE": "살아있는", "ALL": "모든",
+          "ALONE": "혼자", "ALONG": "따라서", "ALREADY": "이미", "ALWAYS": "항상",
+          "AMONG": "사이에", "ANGER": "분노", "ANIMAL": "동물", "ANSWER": "대답",
+          "ANY": "어떤", "APART": "따로", "APPEAR": "나타나다", "AREA": "지역",
+          "ARM": "팔", "ARMY": "군대", "AROUND": "주위에", "ARRIVE": "도착하다",
+          "ART": "예술", "ARTIST": "예술가", "ASK": "묻다", "AWAY": "멀리",
+          "BABY": "아기", "BACK": "뒤/등", "BAKER": "제빵사", "BALL": "공",
+          "BAND": "밴드", "BANK": "은행", "BAT": "박쥐/방망이", "BATH": "목욕",
+          "BEAT": "치다", "BEAUTY": "아름다움", "BECAUSE": "때문에", "BECOME": "되다",
+          "BED": "침대", "BEE": "꿀벌", "BEFORE": "전에", "BEGIN": "시작하다",
+          "BEHIND": "뒤에", "BELL": "종", "BELOW": "아래에", "BELT": "벨트",
+          "BENCH": "벤치", "BEST": "최고의", "BETTER": "더 좋은", "BETWEEN": "사이에",
+          "BICYCLE": "자전거", "BIRD": "새", "BIRTH": "탄생", "BLACK": "검은색",
+          "BLANKET": "담요", "BLOCK": "블록", "BLOOD": "피", "BLOW": "불다",
+          "BLUE": "파란색", "BOARD": "판", "BOAT": "보트", "BODY": "몸",
+          "BONE": "뼈", "BOTTLE": "병", "BOTTOM": "바닥", "BOWL": "그릇",
+          "BOX": "상자", "BRAIN": "뇌", "BREAD": "빵", "BREAK": "부수다/휴식",
+          "BRIDGE": "다리", "BRIGHT": "밝은", "BRING": "가져오다", "BRUSH": "솔/빗",
+          "BUILD": "짓다", "BURN": "타다", "BUS": "버스", "BUTTON": "단추",
+          "BUY": "사다", "BYE": "안녕", "CAB": "택시", "CALL": "부르다",
+          "CALM": "차분한", "CAMERA": "카메라", "CAMP": "캠프", "CAPITAL": "수도",
+          "CAPTAIN": "선장/주장", "CARD": "카드", "CARE": "돌봄", "CAREFUL": "조심스러운",
+          "CARRY": "나르다", "CASE": "상자/경우", "CASTLE": "성", "CATCH": "잡다",
+          "CENTER": "중심", "CHAIR": "의자", "CHANCE": "기회", "CHANGE": "변화",
+          "CHEAP": "저렴한", "CHECK": "확인하다", "CHEST": "가슴/상자", "CHILD": "아이",
+          "CHOOSE": "고르다", "CHURCH": "교회", "CIRCLE": "원", "CITY": "도시",
+          "CLASS": "수업/반", "CLEAN": "깨끗한", "CLEAR": "맑은", "CLIMB": "오르다",
+          "CLOCK": "시계", "CLOSE": "닫다", "CLOTHES": "옷", "CLOUD": "구름",
+          "CLUB": "동아리", "COACH": "코치", "COAT": "외투", "COFFEE": "커피",
+          "COLD": "차가운/감기", "CONCERT": "공연", "COOK": "요리하다", "COPY": "복사하다",
+          "CORNER": "모퉁이", "COUNT": "세다", "COUNTRY": "나라", "COVER": "덮다",
+          "CREAM": "크림", "CROSS": "건너다", "CROWD": "군중", "CROWN": "왕관",
+          "CRY": "울다", "DAD": "아빠", "DAILY": "매일의", "DANCE": "춤추다",
+          "DANCER": "무용수", "DANGER": "위험", "DARK": "어두운", "DATE": "날짜",
+          "DAWN": "새벽", "DAY": "날/낮", "DEAD": "죽은", "DEAR": "친애하는",
+          "DECIDE": "결정하다", "DEEP": "깊은", "DELICIOUS": "맛있는", "DENTIST": "치과의사",
+          "DIARY": "일기", "DICTIONARY": "사전", "DIE": "죽다", "DINNER": "저녁식사",
+          "DIRT": "흙/먼지", "DIRTY": "더러운", "DISH": "접시", "DOCTOR": "의사",
+          "DOWN": "아래로", "DRAW": "그리다", "DRAWING": "그림", "DREAM": "꿈",
+          "DRIVE": "운전하다", "DRIVER": "운전사", "DROP": "떨어지다", "DRY": "마른",
+          "EAR": "귀", "EARLY": "이른", "EARN": "벌다", "EARTH": "지구/땅",
+          "EAST": "동쪽", "EASY": "쉬운", "EIGHT": "여덟", "ELEVEN": "열하나",
+          "EMPTY": "텅 빈", "END": "끝", "ENGINE": "엔진", "ENGLISH": "영어",
+          "ENJOY": "즐기다", "ENOUGH": "충분한", "ENTER": "들어가다", "EVENT": "행사",
+          "EVER": "언제나", "EVERY": "모든", "EXAM": "시험", "EXCITED": "신난",
+          "EXERCISE": "운동", "EYE": "눈", "FACE": "얼굴", "FACT": "사실",
+          "FACTORY": "공장", "FAIR": "공평한", "FAMOUS": "유명한", "FARM": "농장",
+          "FAT": "뚱뚱한", "FEED": "먹이를 주다", "FEEL": "느끼다", "FEET": "발들",
+          "FEW": "적은", "FIELD": "들판", "FIFTEEN": "열다섯", "FIFTY": "쉰",
+          "FIGHT": "싸우다", "FILL": "채우다", "FILM": "영화", "FINAL": "마지막의",
+          "FIND": "찾다", "FINE": "좋은/벌금", "FINGER": "손가락", "FINISH": "끝내다",
+          "FIRE": "불", "FIRST": "첫 번째", "FISHING": "낚시", "FIVE": "다섯",
+          "FIX": "고치다", "FLAG": "깃발", "FLAT": "평평한", "FLOOR": "바닥/층",
+          "FLY": "날다/파리", "FOG": "안개", "FOLLOW": "따르다", "FOOD": "음식",
+          "FOOT": "발", "FOOTBALL": "축구", "FOR": "위하여", "FORGET": "잊다",
+          "FOX": "여우", "FREE": "자유로운/무료", "FRIEND": "친구", "FROM": "부터",
+          "FRONT": "앞", "FRUIT": "과일", "FULL": "가득 찬", "FUN": "재미있는",
+          "FUNNY": "우스운", "FUTURE": "미래", "GAME": "게임", "GARDEN": "정원",
+          "GAS": "가스", "GATE": "대문", "GIFT": "선물", "GIVE": "주다",
+          "GLAD": "기쁜", "GLASS": "유리잔", "GLOVE": "장갑", "GOAL": "목표/골",
+          "GOLD": "금", "GOLF": "골프", "GRASS": "풀", "GREAT": "위대한",
+          "GREEN": "초록색", "GROUND": "땅", "GROUP": "무리", "GROW": "자라다",
+          "GUESS": "추측하다", "GUEST": "손님", "GUIDE": "안내하다", "GUM": "껌",
+          "HAIR": "머리카락", "HALF": "절반", "HALL": "복도/홀", "HAM": "햄",
+          "HAND": "손", "HANDLE": "손잡이/다루다", "HANG": "걸다", "HAPPEN": "일어나다",
+          "HARBOR": "항구", "HARD": "어려운/딱딱한", "HAT": "모자", "HAVE": "가지다",
+          "HEAD": "머리", "HEALTH": "건강", "HEALTHY": "건강한", "HEAR": "듣다",
+          "HEART": "심장/마음", "HEAT": "열기", "HELMET": "헬멧", "HELP": "돕다",
+          "HEN": "암탉", "HERE": "여기", "HERO": "영웅", "HIGH": "높은",
+          "HIGHWAY": "고속도로", "HILL": "언덕", "HISTORY": "역사", "HIT": "치다",
+          "HOBBY": "취미", "HOLD": "잡다", "HOLE": "구멍", "HOLIDAY": "휴일",
+          "HOME": "집", "HONEST": "정직한", "HONEY": "꿀", "HOPE": "희망",
+          "HOT": "더운/뜨거운", "HOTEL": "호텔", "HOUR": "시간", "HOW": "어떻게",
+          "HUG": "안다", "HUGE": "거대한", "HUMAN": "인간", "HUNT": "사냥하다",
+          "HURRY": "서두르다", "HURT": "다치다", "IDEA": "생각/아이디어", "IMAGE": "그림/이미지",
+          "IMPORTANT": "중요한", "INSECT": "곤충", "INSIDE": "안에", "INTERNET": "인터넷",
+          "INVENT": "발명하다", "INVITE": "초대하다", "IRON": "철/다리미", "ISLAND": "섬",
+          "JAR": "단지/병", "JEANS": "청바지", "JOB": "직업", "JOIN": "참여하다",
+          "JOKE": "농담", "JOURNEY": "여행", "JOY": "기쁨", "JUNGLE": "정글",
+          "KEEP": "유지하다", "KEY": "열쇠", "KICK": "차다", "KID": "어린이",
+          "KILL": "죽이다", "KIND": "친절한/종류", "KISS": "입맞춤", "KNEE": "무릎",
+          "KNOCK": "두드리다", "KNOW": "알다", "LADY": "숙녀", "LAMP": "램프",
+          "LAND": "땅", "LARGE": "큰", "LAST": "마지막", "LATE": "늦은",
+          "LAUGH": "웃다", "LEARN": "배우다", "LEAVE": "떠나다", "LEFT": "왼쪽",
+          "LEG": "다리", "LETTER": "편지/글자", "LIBRARY": "도서관", "LINE": "선/줄",
+          "LIP": "입술", "LIST": "목록", "LITTLE": "작은", "LIVE": "살다",
+          "LOCK": "잠그다", "LONG": "긴", "LOSE": "잃다", "LOT": "많은",
+          "LOUD": "시끄러운", "LOW": "낮은", "LUCK": "행운", "LUCKY": "운이 좋은",
+          "LUNCH": "점심식사", "MAGIC": "마법", "MAIL": "우편", "MAKE": "만들다",
+          "MAN": "남자", "MANY": "많은", "MAP": "지도", "MEAL": "식사",
+          "MEAT": "고기", "MEDICINE": "약", "MEET": "만나다", "MELON": "멜론",
+          "MEMBER": "회원", "MEMORY": "기억", "MIDDLE": "중간", "MILK": "우유",
+          "MIND": "마음", "MINUTE": "분", "MIRROR": "거울", "MISS": "그리워하다/놓치다",
+          "MOM": "엄마", "MOMENT": "순간", "MONEY": "돈", "MONTH": "달/월",
+          "MOON": "달", "MOUTH": "입", "MOVE": "움직이다", "MOVIE": "영화",
+          "MUCH": "많은", "MUSIC": "음악", "NAME": "이름", "NARROW": "좁은",
+          "NATURE": "자연", "NEAR": "가까운", "NECK": "목", "NEED": "필요하다",
+          "NEIGHBOR": "이웃", "NEW": "새로운", "NEWS": "뉴스", "NEXT": "다음의",
+          "NICE": "좋은/친절한", "NINE": "아홉", "NO": "아니오", "NOISE": "소음",
+          "NOON": "정오", "NORTH": "북쪽", "NOTE": "메모", "NOW": "지금",
+          "NUMBER": "숫자", "NURSE": "간호사", "OFFICE": "사무실", "OIL": "기름",
+          "OLD": "오래된/나이든", "OPEN": "열다", "OUT": "밖으로", "OUTSIDE": "바깥",
+          "OVEN": "오븐", "OVER": "넘어서", "PAGE": "쪽/페이지", "PAINT": "페인트칠하다",
+          "PAINTER": "화가", "PAINTING": "그림", "PAIR": "한 쌍", "PALACE": "궁전",
+          "PARENT": "부모", "PARK": "공원", "PARTY": "파티", "PASS": "통과하다",
+          "PAST": "과거", "PATH": "길", "PAY": "지불하다", "PEACE": "평화",
+          "PEAR": "배", "PEOPLE": "사람들", "PEPPER": "후추/고추", "PET": "애완동물",
+          "PICK": "고르다/따다", "PICNIC": "소풍", "PICTURE": "사진/그림", "PIE": "파이",
+          "PLACE": "장소", "PLAN": "계획", "PLANE": "비행기", "PLANT": "식물/심다",
+          "PLAYER": "선수", "POCKET": "주머니", "POEM": "시", "POINT": "점/가리키다",
+          "POOL": "수영장", "POOR": "가난한", "PORK": "돼지고기", "POST": "우편/게시하다",
+          "PRACTICE": "연습하다", "PRESENT": "선물/현재", "PRICE": "가격", "PRINCE": "왕자",
+          "PRINCESS": "공주", "PULL": "당기다", "PUPPY": "강아지", "PUSH": "밀다",
+          "QUESTION": "질문", "QUICK": "빠른", "QUIZ": "퀴즈", "QUARTER": "4분의 1",
+          "QUITE": "꽤", "RACE": "경주", "RADIO": "라디오", "RAIN": "비",
+          "READY": "준비된", "REAL": "진짜의", "RED": "빨간색", "REMEMBER": "기억하다",
+          "RICE": "밥/쌀", "RICH": "부유한", "RIDE": "타다", "RIGHT": "오른쪽/맞는",
+          "RING": "반지/울리다", "ROCKET": "로켓", "ROOF": "지붕", "ROOM": "방",
+          "ROPE": "밧줄", "ROSE": "장미", "ROUND": "둥근", "SAFE": "안전한",
+          "SALT": "소금", "SAME": "같은", "SAND": "모래", "SAVE": "구하다/저축하다",
+          "SAY": "말하다", "SCIENCE": "과학", "SEA": "바다", "SEAT": "좌석",
+          "SECOND": "두 번째/초", "SECRET": "비밀", "SEND": "보내다", "SEVEN": "일곱",
+          "SHAKE": "흔들다", "SHAPE": "모양", "SHARE": "공유하다", "SHINE": "빛나다",
+          "SHIP": "배", "SHOP": "상점", "SHOULDER": "어깨", "SHOUT": "소리치다",
+          "SHOW": "보여주다", "SHOWER": "샤워/소나기", "SICK": "아픈", "SIDE": "옆",
+          "SIGN": "표지판/서명하다", "SING": "노래하다", "SINGER": "가수", "SINK": "싱크대/가라앉다",
+          "SIT": "앉다", "SIX": "여섯", "SIZE": "크기", "SKATE": "스케이트",
+          "SKI": "스키", "SKY": "하늘", "SMELL": "냄새맡다", "SMILE": "미소",
+          "SNOW": "눈", "SNOWMAN": "눈사람", "SOAP": "비누", "SOFA": "소파",
+          "SOFT": "부드러운", "SON": "아들", "SONG": "노래", "SOON": "곧",
+          "SORRY": "미안한", "SOUTH": "남쪽", "SPACE": "우주/공간", "SPECIAL": "특별한",
+          "SPEED": "속도", "SPORT": "스포츠", "SQUARE": "정사각형/광장", "STADIUM": "경기장",
+          "STAIR": "계단", "STAMP": "우표", "STAND": "서다", "START": "시작하다",
+          "STAY": "머무르다", "STICK": "막대기", "STORE": "가게", "STORM": "폭풍",
+          "STORY": "이야기", "STREET": "거리", "STUDENT": "학생", "SUBWAY": "지하철",
+          "SUGAR": "설탕", "SUITCASE": "여행가방", "SUPERMARKET": "슈퍼마켓", "SUPPER": "저녁식사",
+          "SURPRISE": "놀라움", "SWIM": "수영하다", "TABLE": "탁자", "TAIL": "꼬리",
+          "TAKE": "가져가다/타다", "TAPE": "테이프", "TASTE": "맛보다", "TAXI": "택시",
+          "TEA": "차", "TEACH": "가르치다", "TEACHER": "선생님", "TEAM": "팀",
+          "TELEPHONE": "전화기", "TELEVISION": "텔레비전", "TELL": "말하다", "TEMPLE": "사원/절",
+          "TEN": "열", "TENT": "텐트", "TEST": "시험", "THANK": "감사하다",
+          "THANKS": "고마워", "THICK": "두꺼운", "THIN": "얇은", "THING": "물건/것",
+          "THINK": "생각하다", "THIRTEEN": "열셋", "THIRTY": "서른", "THIS": "이것",
+          "THROUGH": "통하여", "THROW": "던지다", "TICKET": "표/티켓", "TIE": "넥타이/묶다",
+          "TIME": "시간", "TOE": "발가락", "TOGETHER": "함께", "TONIGHT": "오늘밤",
+          "TOOTH": "이빨", "TOP": "꼭대기", "TOWER": "탑", "TOWN": "마을",
+          "TOY": "장난감", "TRAIN": "기차", "TRAVEL": "여행하다", "TRIP": "여행",
+          "TRUCK": "트럭", "TRUE": "진실의", "TRY": "시도하다", "TWELVE": "열둘",
+          "TWENTY": "스물", "TWO": "둘", "UNDER": "아래에", "UNIFORM": "교복/유니폼",
+          "USE": "사용하다", "UNIT": "단위", "UGLY": "못생긴", "UP": "위로",
+          "UPON": "위에", "US": "우리", "VACATION": "방학/휴가", "VALLEY": "계곡",
+          "VEGETABLE": "채소", "VERY": "매우", "VIDEO": "비디오", "VILLAGE": "마을",
+          "VISIT": "방문하다", "VOICE": "목소리", "WAIT": "기다리다", "WAKE": "깨어나다",
+          "WALL": "벽", "WANT": "원하다", "WASH": "씻다", "WAVE": "파도/흔들다",
+          "WAY": "길/방법", "WEAR": "입다", "WEEK": "주/일주일", "WEEKEND": "주말",
+          "WELCOME": "환영하다", "WEST": "서쪽", "WET": "젖은", "WHAT": "무엇",
+          "WHEEL": "바퀴", "WHEN": "언제", "WHERE": "어디", "WHO": "누구",
+          "WHY": "왜", "WIND": "바람", "WINDOW": "창문", "WING": "날개",
+          "WISH": "바라다/소원", "WOMAN": "여자", "WONDERFUL": "멋진", "WOOD": "나무/목재",
+          "WORD": "단어", "WORK": "일하다", "WORLD": "세계", "WRITER": "작가",
+          "WRONG": "틀린", "YARD": "마당", "YEAR": "해/년", "YES": "네",
+          "YET": "아직", "YOU": "너/당신", "YOUNG": "젊은/어린", "ZERO": "영/제로",
+          "ZIP": "지퍼", "ZONE": "구역", "ZOO": "동물원"
+        };
 
         const forbiddenWords = [
             'FUCK', 'SHIT', 'BITCH', 'ASS', 'SEX', 'PORN', 'DAMN', 'CRAP', 'PISS', 
@@ -1316,7 +1278,7 @@
                 return { valid: true, meaning: commonMeanings[upper], isFast: true };
             }
             if (COMMON_WORDS_DB.has(upper)) {
-                return { valid: true, meaning: "알려진 영단어", isFast: true };
+                return { valid: true, meaning: commonMeanings[upper] || "", isFast: true };
             }
 
             // 2. Datamuse API 정밀 검증 (1.2초 타임아웃)
@@ -1359,7 +1321,7 @@
                             }
 
                             COMMON_WORDS_DB.add(upper);
-                            return { valid: true, meaning: "알려진 영단어", isFast: false };
+                            return { valid: true, meaning: commonMeanings[upper] || "", isFast: false };
                         }
                     }
                 }
@@ -1374,7 +1336,7 @@
 
             try {
                 const ctrl = new AbortController();
-                const to = setTimeout(() => ctrl.abort(), 900);
+                const to = setTimeout(() => ctrl.abort(), 1500);
                 const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ko&dt=t&q=${encodeURIComponent(word.toLowerCase())}`, { signal: ctrl.signal });
                 clearTimeout(to);
                 if (res.ok) {
@@ -1386,7 +1348,7 @@
                     }
                 }
             } catch (e) {}
-            return "알려진 영단어";
+            return "";
         }
 
         // ════════════════════════════════════════════════════════════════════
@@ -1523,12 +1485,17 @@
             const bubbleClass = isMe ? 'bubble-right' : 'bubble-left';
             const senderName = isMe ? '나' : (currentMode === 'single' ? '컴퓨터' : '상대방');
 
+            const hasMeaning = meaning && meaning.trim() !== "";
+            const meaningHtml = hasMeaning 
+                ? `<div class="word-meaning text-xs mt-1 text-center font-bold text-slate-500 border-t border-slate-200/60 pt-1">${meaning}</div>`
+                : `<div class="word-meaning text-xs mt-1 text-center font-bold text-slate-500"></div>`;
+
             div.innerHTML = `
                 <div class="max-w-[75%] flex flex-col ${isMe ? 'items-end' : 'items-start'}">
                     <span class="text-[11px] text-slate-600 font-bold mb-1 px-1">${senderName}</span>
                     <div class="${bubbleClass} px-4 py-2.5 shadow-sm">
                         <div class="font-black text-xl uppercase tracking-wider text-slate-800 leading-tight">${word}</div>
-                        <div class="word-meaning text-xs mt-1 text-center font-bold text-slate-500 border-t border-slate-200/60 pt-1">${meaning || '알려진 영단어'}</div>
+                        ${meaningHtml}
                     </div>
                 </div>
             `;
@@ -1578,21 +1545,26 @@
                 gameScore += wordScore;
                 document.getElementById('game-my-score').innerText = `내 점수: ${gameScore}점 (+${wordScore})`;
 
-                let meaning = check.meaning;
+                let meaning = check.meaning || "";
                 const msgId = `msg-${Date.now()}`;
                 renderBubble('me', cleanWord, meaning, msgId);
                 usedWords.push({ word: cleanWord, meaning });
                 lastLetter = cleanWord[cleanWord.length - 1];
 
                 // 비동기 뜻 보강
-                if (meaning === "알려진 영단어") {
+                if (!meaning) {
                     fetchWordMeaning(cleanWord).then(m => {
-                        if (m && m !== "알려진 영단어") {
+                        if (m) {
                             const el = document.getElementById(msgId);
                             if (el) {
                                 const mEl = el.querySelector('.word-meaning');
-                                if (mEl) mEl.innerText = m;
+                                if (mEl) {
+                                    mEl.innerText = m;
+                                    mEl.className = "word-meaning text-xs mt-1 text-center font-bold text-slate-500 border-t border-slate-200/60 pt-1";
+                                }
                             }
+                            const found = usedWords.find(u => u.word === cleanWord);
+                            if (found) found.meaning = m;
                         }
                     });
                 }
@@ -1631,26 +1603,62 @@
         // AI 턴
         async function playComputerAITurn() {
             const targetChar = lastLetter.toUpperCase();
-            // COMMON_WORDS_DB 중 타겟 문자로 시작하고 아직 쓰이지 않은 단어 찾기
-            const candidates = [];
-            for (const w of COMMON_WORDS_DB) {
+
+            // 1순위: commonMeanings에 명확한 한글 뜻이 내장된 친숙한 단어 우선 수집
+            const meaningCandidates = [];
+            for (const [w, m] of Object.entries(commonMeanings)) {
                 if (w[0] === targetChar && !usedWords.some(u => u.word.toUpperCase() === w)) {
-                    candidates.push(w);
-                    if (candidates.length >= 40) break;
+                    meaningCandidates.push(w);
                 }
             }
 
-            if (candidates.length === 0) {
+            // 2순위: COMMON_WORDS_DB 전체에서 미사용 후보 단어 수집
+            const dbCandidates = [];
+            for (const w of COMMON_WORDS_DB) {
+                if (w[0] === targetChar && !usedWords.some(u => u.word.toUpperCase() === w)) {
+                    dbCandidates.push(w);
+                }
+            }
+
+            if (meaningCandidates.length === 0 && dbCandidates.length === 0) {
                 await finishGame("컴퓨터가 더 이상 아는 단어가 없습니다! 🎉<br>당신의 승리입니다!");
                 return;
             }
 
-            const chosenWord = candidates[Math.floor(Math.random() * candidates.length)];
-            const meaning = commonMeanings[chosenWord] || "알려진 영단어";
+            // 초등 학생 눈높이에 맞게 뜻이 있는 단어를 최우선(1순위)으로 무작위 선택
+            let chosenWord = "";
+            let meaning = "";
 
+            if (meaningCandidates.length > 0) {
+                chosenWord = meaningCandidates[Math.floor(Math.random() * meaningCandidates.length)];
+                meaning = commonMeanings[chosenWord] || "";
+            } else {
+                chosenWord = dbCandidates[Math.floor(Math.random() * dbCandidates.length)];
+                meaning = commonMeanings[chosenWord] || "";
+            }
+
+            const msgId = `msg-ai-${Date.now()}`;
             usedWords.push({ word: chosenWord, meaning });
             lastLetter = chosenWord[chosenWord.length - 1];
-            renderBubble('computer', chosenWord, meaning);
+            renderBubble('computer', chosenWord, meaning, msgId);
+
+            // 뜻이 비어있는 경우 비동기 번역 보강
+            if (!meaning) {
+                fetchWordMeaning(chosenWord).then(m => {
+                    if (m) {
+                        const el = document.getElementById(msgId);
+                        if (el) {
+                            const mEl = el.querySelector('.word-meaning');
+                            if (mEl) {
+                                mEl.innerText = m;
+                                mEl.className = "word-meaning text-xs mt-1 text-center font-bold text-slate-500 border-t border-slate-200/60 pt-1";
+                            }
+                        }
+                        const found = usedWords.find(u => u.word === chosenWord);
+                        if (found) found.meaning = m;
+                    }
+                });
+            }
 
             isMyTurn = true;
             setWordInputState(true);
@@ -1781,9 +1789,26 @@
                     // 상대방 단어 동기화
                     if (data.lastWord && data.lastPlayerId !== mySessionId && data.lastPlayerId !== "system") {
                         if (!usedWords.some(w => w.word.toUpperCase() === data.lastWord.toUpperCase())) {
-                            usedWords.push({ word: data.lastWord, meaning: data.lastMeaning });
+                            const oppMeaning = data.lastMeaning || commonMeanings[data.lastWord.toUpperCase()] || "";
+                            usedWords.push({ word: data.lastWord, meaning: oppMeaning });
                             lastLetter = data.lastWord[data.lastWord.length - 1];
-                            renderBubble('opponent', data.lastWord, data.lastMeaning, data.lastMessageId);
+                            const oppMsgId = data.lastMessageId || `msg-opp-${Date.now()}`;
+                            renderBubble('opponent', data.lastWord, oppMeaning, oppMsgId);
+
+                            if (!oppMeaning) {
+                                fetchWordMeaning(data.lastWord).then(m => {
+                                    if (m) {
+                                        const el = document.getElementById(oppMsgId);
+                                        if (el) {
+                                            const mEl = el.querySelector('.word-meaning');
+                                            if (mEl) {
+                                                mEl.innerText = m;
+                                                mEl.className = "word-meaning text-xs mt-1 text-center font-bold text-slate-500 border-t border-slate-200/60 pt-1";
+                                            }
+                                        }
+                                    }
+                                });
+                            }
                         }
                     } else if (data.lastWord === "START" && usedWords.length === 0) {
                         usedWords.push({ word: 'START', meaning: '시작' });
