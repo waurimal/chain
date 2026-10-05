@@ -1052,8 +1052,10 @@
                     iconBox.innerHTML = '<i class="fa-solid fa-user-check"></i>';
                 }
                 if (titleEl) {
+                    const sanitize = window.WaurimalSanitize || (s => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'));
+                    const sName = sanitize(studentProfile.name);
                     titleEl.className = "font-extrabold text-xs text-emerald-900 flex items-center gap-1.5";
-                    titleEl.innerHTML = `<span>${studentProfile.grade}학년 ${studentProfile.classNum}반 ${studentProfile.studentNum}번 <strong>${studentProfile.name}</strong> 학생</span> <span class="px-1.5 py-0.5 rounded text-[10px] bg-emerald-200 text-emerald-800 font-bold">접속 완료</span>`;
+                    titleEl.innerHTML = `<span>${studentProfile.grade}학년 ${studentProfile.classNum}반 ${studentProfile.studentNum}번 <strong>${sName}</strong> 학생</span> <span class="px-1.5 py-0.5 rounded text-[10px] bg-emerald-200 text-emerald-800 font-bold">접속 완료</span>`;
                 }
                 if (descEl) {
                     descEl.className = "text-[11.5px] text-emerald-700 font-medium mt-0.5";
@@ -1360,6 +1362,14 @@
         };
 
         window.showScreen = (screenId) => {
+            if (screenId === 'screen-teacher' && (!window.WaurimalAuth || !window.WaurimalAuth.isAuthenticated())) {
+                if (typeof window.openTeacherAuthModal === 'function') {
+                    window.openTeacherAuthModal();
+                } else {
+                    alert('교사 인증이 필요합니다.');
+                }
+                return;
+            }
             const screens = ['screen-home', 'screen-game', 'screen-teacher'];
             screens.forEach(id => {
                 const el = document.getElementById(id);
@@ -1485,16 +1495,21 @@
             const bubbleClass = isMe ? 'bubble-right' : 'bubble-left';
             const senderName = isMe ? '나' : (currentMode === 'single' ? '컴퓨터' : '상대방');
 
-            const hasMeaning = meaning && meaning.trim() !== "";
+            const sanitize = window.WaurimalSanitize || (s => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'));
+            const safeWord = sanitize(word || '');
+            const safeMeaning = sanitize(meaning || '');
+            const safeSender = sanitize(senderName);
+
+            const hasMeaning = safeMeaning && safeMeaning.trim() !== "";
             const meaningHtml = hasMeaning 
-                ? `<div class="word-meaning text-xs mt-1 text-center font-bold text-slate-500 border-t border-slate-200/60 pt-1">${meaning}</div>`
+                ? `<div class="word-meaning text-xs mt-1 text-center font-bold text-slate-500 border-t border-slate-200/60 pt-1">${safeMeaning}</div>`
                 : `<div class="word-meaning text-xs mt-1 text-center font-bold text-slate-500"></div>`;
 
             div.innerHTML = `
                 <div class="max-w-[75%] flex flex-col ${isMe ? 'items-end' : 'items-start'}">
-                    <span class="text-[11px] text-slate-600 font-bold mb-1 px-1">${senderName}</span>
+                    <span class="text-[11px] text-slate-600 font-bold mb-1 px-1">${safeSender}</span>
                     <div class="${bubbleClass} px-4 py-2.5 shadow-sm">
-                        <div class="font-black text-xl uppercase tracking-wider text-slate-800 leading-tight">${word}</div>
+                        <div class="font-black text-xl uppercase tracking-wider text-slate-800 leading-tight">${safeWord}</div>
                         ${meaningHtml}
                     </div>
                 </div>
@@ -1998,6 +2013,10 @@
         // ── 교사 전용 관리자 모드 ──
         // ════════════════════════════════════════════════════════════════════
         window.openTeacherAuthModal = () => {
+            if (window.WaurimalAuth && window.WaurimalAuth.isAuthenticated()) {
+                openTeacherScreen();
+                return;
+            }
             document.getElementById('input-teacher-pwd').value = '';
             document.getElementById('modal-pwd').classList.remove('hidden');
         };
@@ -2007,7 +2026,7 @@
         };
 
         window.verifyTeacherPwd = async () => {
-            const input = document.getElementById('input-teacher-pwd').value;
+            const input = document.getElementById('input-teacher-pwd').value.trim();
             if (!input) return;
 
             let correctPwd = "1234";
@@ -2016,8 +2035,8 @@
                 if (snap.exists() && snap.data().pw) correctPwd = snap.data().pw;
             } catch (e) {}
 
-            const waurimalPw = localStorage.getItem('waurimal_admin_pw');
-            if (input === correctPwd || input === "0000" || input === "1234" || (waurimalPw && input === waurimalPw)) {
+            const isValid = window.WaurimalAuth ? window.WaurimalAuth.authenticate(input) : (input === (localStorage.getItem('waurimal_admin_pw') || correctPwd || '1234'));
+            if (isValid) {
                 closeTeacherAuthModal();
                 openTeacherScreen();
             } else {
@@ -2026,6 +2045,10 @@
         };
 
         window.openTeacherScreen = () => {
+            if (!window.WaurimalAuth || !window.WaurimalAuth.isAuthenticated()) {
+                window.openTeacherAuthModal();
+                return;
+            }
             window.showScreen('screen-teacher');
             loadTeacherData();
         };
@@ -2150,8 +2173,12 @@
                 return;
             }
             try {
+                if (window.WaurimalAuth) {
+                    window.WaurimalAuth.setPw(newPwd);
+                } else {
+                    localStorage.setItem('waurimal_admin_pw', newPwd);
+                }
                 await setDoc(doc(db, "admin", "admin_settings"), { pw: newPwd }, { merge: true });
-                localStorage.setItem('waurimal_admin_pw', newPwd);
                 showAlert("교사 비밀번호가 성공적으로 변경되었습니다.", "변경 완료", "✅");
                 document.getElementById('input-new-teacher-pwd').value = '';
             } catch (e) {
